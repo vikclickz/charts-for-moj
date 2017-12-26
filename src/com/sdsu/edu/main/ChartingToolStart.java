@@ -38,6 +38,8 @@ class ChartingToolStart {
     JPanel firstPanel = new JPanel();
     JButton piebtn = new JButton("PIE", new ImageIcon("./src/data/piechartbtn.jpg"));
     JButton barbtn = new JButton("BAR", new ImageIcon("./src/data/barchartbtn.jpg"));
+
+    JButton scatterbtn = new JButton("BAR", new ImageIcon("./src/data/scatter-plot.jpg"));
     List<String> numericList;
     List<String> charList;
 
@@ -83,11 +85,11 @@ class ChartingToolStart {
         }
       });
 
-      barbtn.setPreferredSize(new Dimension(100, 100));
-      firstPanel.add(barbtn);
-      barbtn.addActionListener(new ActionListener() {
+      scatterbtn.setPreferredSize(new Dimension(100, 100));
+      firstPanel.add(scatterbtn);
+      scatterbtn.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          add(new BarPanelGUI(numericList, charList));
+          add(new ScatterPanelGUI(numericList, charList));
           setVisible(true);
         }
       });
@@ -350,7 +352,7 @@ class ChartingToolStart {
                 selectedFields.add((String) obj);
               }
               DbfReadController dbfread = DbfReadController.getInstance();
-              dbfread.dataHandler(selectedFields, barchartSType, characterNameSType,
+              dbfread.dataHandler(selectedFields, characterNameSType,
                       chartColorSType);
             }
           }
