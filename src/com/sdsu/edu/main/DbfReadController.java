@@ -41,8 +41,11 @@ import org.jfree.chart.renderer.category.ScatterRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.function.LineFunction2D;
 import org.jfree.data.gantt.TaskSeries;
 import org.jfree.data.gantt.TaskSeriesCollection;
+import org.jfree.data.general.DatasetUtilities;
+import org.jfree.data.statistics.Regression;
 import org.jfree.data.xy.DefaultXYDataset;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
@@ -787,6 +790,46 @@ public class DbfReadController {
     ChartViewController chartViewController = new ChartViewController();
     chartViewController.display(panel);
 
+    this.drawRegressionLine(dataset, chart);
+
     return null;
+  }
+
+  private void drawRegressionLine(XYDataset inputData, JFreeChart chart) {
+    // Get the parameters 'a' and 'b' for an equation y = a + b * x,
+    // fitted to the inputData using ordinary least squares regression.
+    // a - regressionParameters[0], b - regressionParameters[1]
+    double regressionParameters[] = Regression.getOLSRegression(inputData,
+        0);
+
+    // Prepare a line function using the found parameters
+    LineFunction2D linefunction2d = new LineFunction2D(
+        regressionParameters[0], regressionParameters[1]);
+
+    // Creates a dataset by taking sample values from the line function
+    XYDataset dataset = DatasetUtilities.sampleFunction2D(linefunction2d,
+        0D, 300, 100, "Fitted Regression Line");
+
+    // Draw the line dataset
+    XYPlot xyplot = chart.getXYPlot();
+    xyplot.setDataset(1, dataset);
+    XYLineAndShapeRenderer xylineandshaperenderer = new XYLineAndShapeRenderer(
+        true, false);
+    xylineandshaperenderer.setSeriesPaint(0, Color.BLACK);
+    xyplot.setRenderer(1, xylineandshaperenderer);
+  }
+
+  private void drawInputPoint(double x, double y, JFreeChart chart) {
+    // Create a new dataset with only one row
+    XYSeriesCollection dataset = new XYSeriesCollection();
+    String title = "Input area: " + x + ", Price: " + y;
+    XYSeries series = new XYSeries(title);
+    series.add(x, y);
+    dataset.addSeries(series);
+
+    XYPlot plot = (XYPlot) chart.getPlot();
+    plot.setDataset(2, dataset);
+    XYItemRenderer renderer = new XYLineAndShapeRenderer(false, true);
+    plot.setRenderer(2, renderer);
   }
 }
