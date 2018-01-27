@@ -816,7 +816,7 @@ public class DbfReadController {
     ValueAxis xAxis = new SymbolAxis(characterNameSType, stockArr);
     xAxis.setVerticalTickLabels(true);
 
-    XYSeries series1 = new XYSeries("Non Linear Regression Chart");
+    XYSeries series1 = new XYSeries("Power Regression Chart");
 
     for (int i=2; i<=52; i++) {
       series1.add(i, stateValues.get(i-2));
@@ -856,7 +856,7 @@ public class DbfReadController {
     ValueAxis xAxis = new SymbolAxis(characterNameSType, stockArr);
     xAxis.setVerticalTickLabels(true);
 
-    XYSeries series1 = new XYSeries("Non Linear Regression Chart");
+    XYSeries series1 = new XYSeries("Polynomial Regression Chart");
 
     for (int i=2; i<=52; i++) {
       series1.add(i, stateValues.get(i-2));
@@ -889,8 +889,14 @@ public class DbfReadController {
     double regressionParameters[] = Regression.getPolynomialRegression(inputData,
         0, 2);
 
+    double myArr[] = new double[regressionParameters.length - 1];
+
+    for (int i=0; i < regressionParameters.length-1; i++) {
+      myArr[i] = regressionParameters[i];
+    }
+
     // Prepare a line function using the found parameters
-    Function2D curve = new PolynomialFunction2D(regressionParameters);
+    Function2D curve = new PolynomialFunction2D(myArr);
 
     XYDataset dataset = DatasetUtilities.sampleFunction2D(curve,
         0.0, 50.0, 100, "Poly Regression Line");
