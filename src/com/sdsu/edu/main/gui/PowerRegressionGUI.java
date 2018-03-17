@@ -1,6 +1,7 @@
 package com.sdsu.edu.main.gui;
 
 import com.sdsu.edu.main.DbfReadController;
+import com.sdsu.edu.main.constant.GUILabelConstants;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -63,7 +64,7 @@ public class PowerRegressionGUI extends JPanel {
     scrollPane.setViewportView(attributeSelectList);
     add(scrollPane);
     // add a button to show the list of attributes selected
-    selectbtn = new JButton("Select Done");
+    selectbtn = new JButton(GUILabelConstants.SUBMIT_BTN_LBL);
     add(selectbtn);
     selectbtn.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
