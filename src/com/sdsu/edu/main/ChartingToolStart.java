@@ -99,7 +99,6 @@ class ChartingToolStart {
           setVisible(true);
         }
       });
-      setVisible(true);
 
       nonLinearBtn.setPreferredSize(new Dimension(100, 100));
       firstPanel.add(nonLinearBtn);
