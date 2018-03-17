@@ -1,5 +1,6 @@
 package com.sdsu.edu.main;
 
+import java.awt.*;
 import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.DataOutput;
@@ -16,6 +17,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import java.util.Vector;
 
 import javax.swing.JFrame;
@@ -28,23 +30,53 @@ import com.sdsu.edu.main.DbfReadController.DBFHeader;
 import com.sdsu.edu.main.DbfReadController.DBFReader;
 import com.sdsu.edu.main.DbfReadController.DbfUtils;
 import com.sdsu.edu.main.DbfReadController.NumericRecord;
+import javax.swing.JTabbedPane;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.SymbolAxis;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.plot.FastScatterPlot;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.category.ScatterRenderer;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.function.Function2D;
+import org.jfree.data.function.LineFunction2D;
+import org.jfree.data.function.PolynomialFunction2D;
+import org.jfree.data.function.PowerFunction2D;
+import org.jfree.data.gantt.TaskSeries;
+import org.jfree.data.gantt.TaskSeriesCollection;
+import org.jfree.data.general.DatasetUtilities;
+import org.jfree.data.statistics.Regression;
+import org.jfree.data.xy.DefaultXYDataset;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 /*
  * Classes that support DBFReading for charttool
  */
 public class DbfReadController {
+
   /*
    * Supporting classes for DBF read
    */
   public class DBFException extends IOException {
+
     public DBFException() {
       super();
     }
+
     public DBFException(String msg) {
       super(msg);
     }
   }
+
   class DBFHeader {
+
     static final byte SIG_DBASE_III = (byte) 0x03;
     /* DBF structure start here */
     byte signature; /* 0 */
@@ -65,12 +97,14 @@ public class DbfReadController {
     short reserv4; /* 30-31 */
     DBFField[] fieldArray; /* each 32 bytes */
     byte terminator1; /* n+1 */
+
     // byte[] databaseContainer; /* 263 bytes */
     /* DBF structure ends here */
     DBFHeader() {
       this.signature = SIG_DBASE_III;
       this.terminator1 = 0x0D;
     }
+
     void read(DataInput dataInput) throws IOException {
       signature = dataInput.readByte(); /* 0 */
       year = dataInput.readByte(); /* 1 */
@@ -99,6 +133,7 @@ public class DbfReadController {
         fieldArray[i] = (DBFField) v_fields.elementAt(i);
       }
     }
+
     void write(DataOutput dataOutput) throws IOException {
       dataOutput.writeByte(signature); /* 0 */
       GregorianCalendar calendar = new GregorianCalendar();
@@ -131,7 +166,7 @@ public class DbfReadController {
 
     private short findHeaderLength() {
       return (short) (1 + 3 + 4 + 2 + 2 + 2 + 1 + 1 + 4 + 4 + 4 + 1 + 1
-                 + 2 + (32 * fieldArray.length) + 1);
+          + 2 + (32 * fieldArray.length) + 1);
     }
 
     private short findRecordLength() {
@@ -144,6 +179,7 @@ public class DbfReadController {
   } // end DbfHeader
 
   public static class DBFField {
+
     public static final byte FIELD_TYPE_C = (byte) 'C';
     public static final byte FIELD_TYPE_L = (byte) 'L';
     public static final byte FIELD_TYPE_N = (byte) 'N';
@@ -165,6 +201,7 @@ public class DbfReadController {
     /* Field struct variables end here */
     /* other class variables */
     int nameNullIndex = 0;
+
     public static DBFField createField(DataInput in) throws IOException {
       DBFField field = new DBFField();
       byte t_byte = in.readByte(); /* 0 */
@@ -189,8 +226,9 @@ public class DbfReadController {
       field.setFieldsFlag = in.readByte(); /* 23 */
       in.readFully(field.reserv4); /* 24-30 */
       field.indexFieldFlag = in.readByte(); /* 31 */
-       return field;
+      return field;
     }
+
     protected void write(DataOutput out) throws IOException {
       // Field Name
       out.write(fieldName); /* 0-10 */
@@ -207,36 +245,48 @@ public class DbfReadController {
       out.write(new byte[7]); /* 24-30 */
       out.writeByte((byte) 0x00); /* 31 */
     }
+
     public String getName() {
       return new String(this.fieldName, 0, nameNullIndex);
     }
+
     public byte getDataType() {
       return dataType;
     }
+
     public int getFieldLength() {
       return fieldLength;
     }
+
     public int getDecimalCount() {
       return decimalCount;
     }
+
     public void setDataType(byte value) {
       switch (value) {
-        case 'D': this.fieldLength = 8; /* fall through */
+        case 'D':
+          this.fieldLength = 8; /* fall through */
         case 'C':
         case 'L':
         case 'N':
         case 'F':
-        case 'M': this.dataType = value;
-                  break;
-        default: throw new IllegalArgumentException("Unknown data type");
+        case 'M':
+          this.dataType = value;
+          break;
+        default:
+          throw new IllegalArgumentException("Unknown data type");
       }
     }
   } // end DbfField
+
   public final static class DbfUtils {
+
     public static final int ALIGN_LEFT = 10;
     public static final int ALIGN_RIGHT = 12;
+
     private DbfUtils() {
     }
+
     public static int readLittleEndianInt(DataInput in) throws IOException {
       int bigEndian = 0;
       for (int shiftBy = 0; shiftBy < 32; shiftBy += 8) {
@@ -244,11 +294,13 @@ public class DbfReadController {
       }
       return bigEndian;
     }
+
     public static short readLittleEndianShort(DataInput in) throws IOException {
       int low = in.readUnsignedByte() & 0xff;
       int high = in.readUnsignedByte();
       return (short) (high << 8 | low);
     }
+
     public static byte[] trimLeftSpaces(byte[] arr) {
       StringBuffer t_sb = new StringBuffer(arr.length);
       for (int i = 0; i < arr.length; i++) {
@@ -258,6 +310,7 @@ public class DbfReadController {
       }
       return t_sb.toString().getBytes();
     }
+
     public static short littleEndian(short value) {
       short num1 = value;
       short mask = (short) 0xff;
@@ -267,6 +320,7 @@ public class DbfReadController {
       num2 |= (num1 & mask) >> 8;
       return num2;
     }
+
     public static int littleEndian(int value) {
       int num1 = value;
       int mask = 0xff;
@@ -279,37 +333,43 @@ public class DbfReadController {
       }
       return num2;
     }
+
     public static byte[] textPadding(String text, String characterSetName,
-                    int length) throws java.io.UnsupportedEncodingException {
+        int length) throws java.io.UnsupportedEncodingException {
       return textPadding(text, characterSetName, length,
-      DbfUtils.ALIGN_LEFT);
+          DbfUtils.ALIGN_LEFT);
     }
+
     public static byte[] textPadding(String text, String characterSetName,
-         int length, int alignment) throws java.io.UnsupportedEncodingException {
-      return textPadding(text, characterSetName, length, alignment,(byte) ' ');
+        int length, int alignment) throws java.io.UnsupportedEncodingException {
+      return textPadding(text, characterSetName, length, alignment, (byte) ' ');
     }
+
     public static byte[] textPadding(String text, String characterSetName,
-                  int length, int alignment, byte paddingByte)
-                  throws java.io.UnsupportedEncodingException {
+        int length, int alignment, byte paddingByte)
+        throws java.io.UnsupportedEncodingException {
       if (text.length() >= length) {
         return text.substring(0, length).getBytes(characterSetName);
       }
       byte byte_array[] = new byte[length];
       Arrays.fill(byte_array, paddingByte);
       switch (alignment) {
-        case ALIGN_LEFT: System.arraycopy(text.getBytes(characterSetName), 0,
-                             byte_array, 0, text.length());
-                         break;
-        case ALIGN_RIGHT: int t_offset = length - text.length();
-                          System.arraycopy(text.getBytes(characterSetName), 0,
-                          byte_array, t_offset, text.length());
-                          break;
+        case ALIGN_LEFT:
+          System.arraycopy(text.getBytes(characterSetName), 0,
+              byte_array, 0, text.length());
+          break;
+        case ALIGN_RIGHT:
+          int t_offset = length - text.length();
+          System.arraycopy(text.getBytes(characterSetName), 0,
+              byte_array, t_offset, text.length());
+          break;
       }
       return byte_array;
     }
+
     public static byte[] doubleFormating(Double doubleNum,
-              String characterSetName, int fieldLength, int sizeDecimalPart)
-                                  throws java.io.UnsupportedEncodingException {
+        String characterSetName, int fieldLength, int sizeDecimalPart)
+        throws java.io.UnsupportedEncodingException {
       int sizeWholePart = fieldLength - (sizeDecimalPart > 0 ? (sizeDecimalPart + 1) : 0);
       StringBuffer format = new StringBuffer(fieldLength);
       for (int i = 0; i < sizeWholePart; i++) {
@@ -323,8 +383,9 @@ public class DbfReadController {
       }
       DecimalFormat df = new DecimalFormat(format.toString());
       return textPadding(df.format(doubleNum.doubleValue()).toString(),
-              characterSetName, fieldLength, ALIGN_RIGHT);
+          characterSetName, fieldLength, ALIGN_RIGHT);
     }
+
     public static boolean contains(byte[] arr, byte value) {
       boolean found = false;
       for (int i = 0; i < arr.length; i++) {
@@ -338,12 +399,14 @@ public class DbfReadController {
   } // end DbfUtils
 
   public class DBFReader {
+
     protected String characterSetName = "8859_1";
     protected final int END_OF_DATA = 0x1A;
     DataInputStream dataInputStream;
     DBFHeader header;
     /* Class specific variables */
     boolean isClosed = true;
+
     public DBFReader(InputStream in) throws DBFException {
       try {
         this.dataInputStream = new DataInputStream(in);
@@ -352,34 +415,38 @@ public class DbfReadController {
         this.header.read(this.dataInputStream);
         /* it might be required to leap to the start of records at times */
         int t_dataStartIndex = this.header.headerLength
-                - (32 + (32 * this.header.fieldArray.length)) - 1;
+            - (32 + (32 * this.header.fieldArray.length)) - 1;
         if (t_dataStartIndex > 0) {
           dataInputStream.skip(t_dataStartIndex);
         }
       } catch (IOException e) {
-          throw new DBFException(e.getMessage());
-        }
+        throw new DBFException(e.getMessage());
+      }
     }
+
     public String toString() {
       StringBuffer sb = new StringBuffer(this.header.year + "/"
-                   + this.header.month + "/" + this.header.day + "\n"
-                   + "Total records: " + this.header.numberOfRecords
-                   + "\nHEader length: " + this.header.headerLength + "");
+          + this.header.month + "/" + this.header.day + "\n"
+          + "Total records: " + this.header.numberOfRecords
+          + "\nHEader length: " + this.header.headerLength + "");
       for (int i = 0; i < this.header.fieldArray.length; i++) {
         sb.append(this.header.fieldArray[i].getName());
         sb.append("\n");
       }
       return sb.toString();
     }
+
     public int getRecordCount() {
       return this.header.numberOfRecords;
     }
+
     public DBFField getField(int index) throws DBFException {
       if (isClosed) {
         throw new DBFException("Source is not open");
       }
       return this.header.fieldArray[index];
     }
+
     public int getFieldCount() throws DBFException {
       if (isClosed) {
         throw new DBFException("Source is not open");
@@ -389,6 +456,7 @@ public class DbfReadController {
       }
       return -1;
     }
+
     public Object[] nextRecord() throws DBFException {
       if (isClosed) {
         throw new DBFException("Source is not open");
@@ -408,91 +476,104 @@ public class DbfReadController {
         } while (isDeleted);
         for (int i = 0; i < this.header.fieldArray.length; i++) {
           switch (this.header.fieldArray[i].getDataType()) {
-            case 'C': byte b_array[] = new byte[this.header.fieldArray[i]
-                     .getFieldLength()];
-                      dataInputStream.read(b_array);
-                      recordObjects[i] = new String(b_array, characterSetName);
-                      break;
-            case 'D': byte t_byte_year[] = new byte[4];
-                      dataInputStream.read(t_byte_year);
-                      byte t_byte_month[] = new byte[2];
-                      dataInputStream.read(t_byte_month);
-                      byte t_byte_day[] = new byte[2];
-                      dataInputStream.read(t_byte_day);
-                      try {
-                        GregorianCalendar calendar = new GregorianCalendar(
-                                Integer.parseInt(new String(t_byte_year)),
-                                Integer.parseInt(new String(t_byte_month)) - 1,
-                                Integer.parseInt(new String(t_byte_day)));
-                        recordObjects[i] = calendar.getTime();
-                      } catch (NumberFormatException e) {
-                          /*
-                           * this field may be empty or may have improper
-                           * value set
-                          */
-                          recordObjects[i] = null;
-                        }
-                      break;
-            case 'F': try {
-                        byte t_float[] = new byte[this.header.fieldArray[i].getFieldLength()];
-                        dataInputStream.read(t_float);
-                        t_float = DbfUtils.trimLeftSpaces(t_float);
-                        if (t_float.length > 0 && !DbfUtils.contains(t_float, (byte) '?')) {
-                          recordObjects[i] = new Float(new String(t_float));
-                        } else {
-                          recordObjects[i] = null;
-                        }
-                      } catch (NumberFormatException e) {
-                          throw new DBFException("Failed to parse Float: " + e.getMessage());
-                        }
-                      break;
-            case 'N': try {
-                        byte t_numeric[] = new byte[this.header.fieldArray[i].getFieldLength()];
-                        dataInputStream.read(t_numeric);
-                        t_numeric = DbfUtils.trimLeftSpaces(t_numeric);
-                        if (t_numeric.length > 0 && !DbfUtils.contains(t_numeric, (byte) '?')) {
-                          recordObjects[i] = new Double(new String(t_numeric));
-                        } else {
-                          recordObjects[i] = null;
-                        }
-                      } catch (NumberFormatException e) {
-                          throw new DBFException("Failed to parse Number: " + e.getMessage());
-                        }
-                      break;
-            case 'L': byte t_logical = dataInputStream.readByte();
-                      if (t_logical == 'Y' || t_logical == 't'
-                                     || t_logical == 'T' || t_logical == 't') {
-                        recordObjects[i] = Boolean.TRUE;
-                      } else {
-                        recordObjects[i] = Boolean.FALSE;
-                      }
-                      break;
-            default: recordObjects[i] = new String("null");
+            case 'C':
+              byte b_array[] = new byte[this.header.fieldArray[i]
+                  .getFieldLength()];
+              dataInputStream.read(b_array);
+              recordObjects[i] = new String(b_array, characterSetName);
+              break;
+            case 'D':
+              byte t_byte_year[] = new byte[4];
+              dataInputStream.read(t_byte_year);
+              byte t_byte_month[] = new byte[2];
+              dataInputStream.read(t_byte_month);
+              byte t_byte_day[] = new byte[2];
+              dataInputStream.read(t_byte_day);
+              try {
+                GregorianCalendar calendar = new GregorianCalendar(
+                    Integer.parseInt(new String(t_byte_year)),
+                    Integer.parseInt(new String(t_byte_month)) - 1,
+                    Integer.parseInt(new String(t_byte_day)));
+                recordObjects[i] = calendar.getTime();
+              } catch (NumberFormatException e) {
+                /*
+                 * this field may be empty or may have improper
+                 * value set
+                 */
+                recordObjects[i] = null;
+              }
+              break;
+            case 'F':
+              try {
+                byte t_float[] = new byte[this.header.fieldArray[i].getFieldLength()];
+                dataInputStream.read(t_float);
+                t_float = DbfUtils.trimLeftSpaces(t_float);
+                if (t_float.length > 0 && !DbfUtils.contains(t_float, (byte) '?')) {
+                  recordObjects[i] = new Float(new String(t_float));
+                } else {
+                  recordObjects[i] = null;
+                }
+              } catch (NumberFormatException e) {
+                throw new DBFException("Failed to parse Float: " + e.getMessage());
+              }
+              break;
+            case 'N':
+              try {
+                byte t_numeric[] = new byte[this.header.fieldArray[i].getFieldLength()];
+                dataInputStream.read(t_numeric);
+                t_numeric = DbfUtils.trimLeftSpaces(t_numeric);
+                if (t_numeric.length > 0 && !DbfUtils.contains(t_numeric, (byte) '?')) {
+                  recordObjects[i] = new Double(new String(t_numeric));
+                } else {
+                  recordObjects[i] = null;
+                }
+              } catch (NumberFormatException e) {
+                throw new DBFException("Failed to parse Number: " + e.getMessage());
+              }
+              break;
+            case 'L':
+              byte t_logical = dataInputStream.readByte();
+              if (t_logical == 'Y' || t_logical == 't'
+                  || t_logical == 'T' || t_logical == 't') {
+                recordObjects[i] = Boolean.TRUE;
+              } else {
+                recordObjects[i] = Boolean.FALSE;
+              }
+              break;
+            default:
+              recordObjects[i] = new String("null");
           }
         }
       } catch (EOFException e) {
-          return null;
+        return null;
       } catch (IOException e) {
-          throw new DBFException(e.getMessage());
+        throw new DBFException(e.getMessage());
       }
       return recordObjects;
     }
   } // end DbfReader
+
   public class CharacterRecord {
+
     public HashMap<String, List<String>> fieldAndValues;
+
     public CharacterRecord() {
       fieldAndValues = new HashMap<String, List<String>>();
     }
   }
+
   public class NumericRecord {
+
     public HashMap<String, List<Double>> fieldAndValues;
+
     public NumericRecord() {
       fieldAndValues = new HashMap<String, List<Double>>();
     }
   }
+
   /*
    * Data Table:  rows and coloumns are read
-  */
+   */
   InputStream inputStream = null;
   DBFReader dbfReader = null;
   List<DBFField> charList = new ArrayList<DBFField>();
@@ -515,10 +596,12 @@ public class DbfReadController {
   String xAxisLabel = null;
   String yAxisLabel = null;
   private static DbfReadController DbfRead = new DbfReadController();
+
   /* Static 'instance' method */
   public static DbfReadController getInstance() {
     return DbfRead;
   }
+
   public List<String> readnumericdbf(File dbffile) {
     try {
       // create a DBFReader object
@@ -534,7 +617,7 @@ public class DbfReadController {
          * java.lang.String Numeric N java.lang.Double Double F
          * lava.lang.Double Logical L java.lang.Boolean Date D
          * java.util.Date
-        */
+         */
         if (field.getDataType() == DBFField.FIELD_TYPE_N) {
           numericList.add(field.getName());
           numericFullList.add(field);
@@ -547,7 +630,7 @@ public class DbfReadController {
         // reading the rows for numeric types
         for (String fieldName : numericMap.keySet()) {
           if (!(numericRecord.fieldAndValues.containsKey(fieldName))) {
-            numericRecord.fieldAndValues.put(fieldName,new ArrayList<Double>());
+            numericRecord.fieldAndValues.put(fieldName, new ArrayList<Double>());
           }
           List<Double> recordvalues = numericRecord.fieldAndValues.get(fieldName);
           recordvalues.add((Double) rowObjects[numericMap.get(fieldName)]);
@@ -555,14 +638,15 @@ public class DbfReadController {
       }
       inputStream.close();
     } catch (FileNotFoundException e) {
-        e.printStackTrace();
+      e.printStackTrace();
     } catch (DBFException e) {
-        e.printStackTrace();
+      e.printStackTrace();
     } catch (IOException e) {
-        e.printStackTrace();
+      e.printStackTrace();
     }
     return (List<String>) numericList;
   }
+
   public List<String> readchardbf(File dbffile) {
     try {
       // create a DBFReader object
@@ -578,7 +662,7 @@ public class DbfReadController {
          * java.lang.String Numeric N java.lang.Double Double F
          * lava.lang.Double Logical L java.lang.Boolean Date D
          * java.util.Date
-        */
+         */
         if (field.getDataType() == DBFField.FIELD_TYPE_C) {
           charList.add(field);
           charNameList.add(field.getName());
@@ -591,7 +675,7 @@ public class DbfReadController {
         // reading the rows for character types
         for (String fieldName : charMap.keySet()) {
           if (!(charRecord.fieldAndValues.containsKey(fieldName))) {
-            charRecord.fieldAndValues.put(fieldName,new ArrayList<String>());
+            charRecord.fieldAndValues.put(fieldName, new ArrayList<String>());
           }
           List<String> recordcharvalues = charRecord.fieldAndValues.get(fieldName);
           recordcharvalues.add((String) rowObjects[charMap.get(fieldName)]);
@@ -599,27 +683,28 @@ public class DbfReadController {
       }
       inputStream.close();
     } catch (FileNotFoundException e) {
-        e.printStackTrace();
+      e.printStackTrace();
     } catch (DBFException e) {
-        e.printStackTrace();
+      e.printStackTrace();
     } catch (IOException e) {
-        e.printStackTrace();
+      e.printStackTrace();
     }
     return (List<String>) charNameList;
   }
+
   public String dataHandler(List<String> selectedFields, String chartSType,
-                          String characterNameSType, String chartColorSType) {
+      String characterNameSType, String chartColorSType) {
     String[] stateName;
     if (chartSType.equalsIgnoreCase("Pie")) {
       if (selectedFields.size() > 1) {
         final JFrame frame = new JFrame();
-        JOptionPane.showMessageDialog(frame,"Retry. Select not more than 1 fields.");
+        JOptionPane.showMessageDialog(frame, "Retry. Select not more than 1 fields.");
         frame.dispose();
         System.exit(0);
       }
     } else if (selectedFields.size() > 2) {
       final JFrame frame = new JFrame();
-      JOptionPane.showMessageDialog(frame,"Retry. Select not more than 2 fields.");
+      JOptionPane.showMessageDialog(frame, "Retry. Select not more than 2 fields.");
       frame.dispose();
       System.exit(0);
     }
@@ -639,34 +724,34 @@ public class DbfReadController {
           // pie
           if (chartSType.equalsIgnoreCase("Pie")) {
             chart.pieChart(chartColorSType, fieldName, stateName,
-                         (numericRecord).fieldAndValues.get(fieldName));
+                (numericRecord).fieldAndValues.get(fieldName));
           }
           // "Horizontal"
           if (chartSType.equalsIgnoreCase("Horizontal")) {
             if (selectedFields.size() == 1) {
               chart = new ChartController();
-              chart.horizontalSingleBarChart(chartColorSType,fieldName, stateName,
-                              (numericRecord).fieldAndValues.get(fieldName));
+              chart.horizontalSingleBarChart(chartColorSType, fieldName, stateName,
+                  (numericRecord).fieldAndValues.get(fieldName));
             } else if (selectedFields.size() == 2) {
               fieldNameList.add(fieldName);
               temporaryNumericValues.add((numericRecord).fieldAndValues.get(fieldName));
               if (temporaryNumericValues.size() > 1) {
-                chart.horizontalMultiBarChart(chartColorSType,fieldNameList, stateName,
-                                                            temporaryNumericValues);
+                chart.horizontalMultiBarChart(chartColorSType, fieldNameList, stateName,
+                    temporaryNumericValues);
               }
             }
           }
           // "Vertical"
           if (chartSType.equalsIgnoreCase("Vertical")) {
             if (selectedFields.size() == 1) {
-              chart.verticalSingleBarChart(chartColorSType,fieldName, stateName,
-                                (numericRecord).fieldAndValues.get(fieldName));
+              chart.verticalSingleBarChart(chartColorSType, fieldName, stateName,
+                  (numericRecord).fieldAndValues.get(fieldName));
             } else if (selectedFields.size() == 2) {
               fieldNameList.add(fieldName);
               temporaryNumericValues.add((numericRecord).fieldAndValues.get(fieldName));
               if (temporaryNumericValues.size() > 1) {
-                chart.verticalMultiBarChart(chartColorSType,fieldNameList, stateName,
-                                                         temporaryNumericValues);
+                chart.verticalMultiBarChart(chartColorSType, fieldNameList, stateName,
+                    temporaryNumericValues);
               }
             }
           }
@@ -675,4 +760,234 @@ public class DbfReadController {
     }  // end for
     return null;
   } // end dataHandler
+
+  public String dataHandler(List<String> selectedFields,
+      String characterNameSType, String chartColorSType) {
+
+    String yAxisLabel = selectedFields.get(0);
+
+    List<String> stateList = charRecord.fieldAndValues.get(characterNameSType);
+    List<Double> stateValues = numericRecord.fieldAndValues.get(yAxisLabel);
+
+    String[] stockArr = new String[stateList.size()];
+    stockArr = stateList.toArray(stockArr);
+
+    ValueAxis xAxis = new SymbolAxis(characterNameSType, stockArr);
+    xAxis.setVerticalTickLabels(true);
+
+    XYSeriesCollection dataset = new XYSeriesCollection();
+    XYSeries series1 = new XYSeries("Linear Regression Chart");
+
+    for (int i=1; i<=51; i++) {
+      series1.add(i, stateValues.get(i-1));
+    }
+
+    dataset.addSeries(series1);
+
+    String title = characterNameSType + " vs " + yAxisLabel;
+
+    JFreeChart chart = ChartFactory.createScatterPlot(
+        title,
+        characterNameSType, yAxisLabel, dataset);
+
+    XYPlot plot = (XYPlot) chart.getPlot();
+    plot.setBackgroundPaint(Color.WHITE);
+    plot.setDomainAxis(xAxis);
+    ChartPanel panel = new ChartPanel(chart);
+    ChartViewController chartViewController = new ChartViewController(panel, title);
+    //chartViewController.display(panel);
+
+    this.drawRegressionLine(dataset, chart);
+
+    return null;
+  }
+
+  public String dataHandlerPower(List<String> selectedFields,
+      String characterNameSType, String chartColorSType) {
+
+    String yAxisLabel = selectedFields.get(0);
+
+    List<String> stateList = charRecord.fieldAndValues.get(characterNameSType);
+    List<Double> stateValues = numericRecord.fieldAndValues.get(yAxisLabel);
+
+    String[] stockArr = new String[stateList.size()];
+    stockArr = stateList.toArray(stockArr);
+
+    ValueAxis xAxis = new SymbolAxis(characterNameSType, stockArr);
+    xAxis.setVerticalTickLabels(true);
+
+    XYSeries series1 = new XYSeries("Power Regression Chart");
+
+    for (int i=2; i<=52; i++) {
+      series1.add(i, stateValues.get(i-2));
+    }
+    XYDataset dataset = new XYSeriesCollection(series1);
+
+    String title = characterNameSType + " vs " + yAxisLabel;
+
+    JFreeChart chart = ChartFactory.createScatterPlot(
+        title,
+        characterNameSType, yAxisLabel, dataset);
+
+    XYPlot plot = (XYPlot) chart.getPlot();
+    plot.setBackgroundPaint(Color.WHITE);
+
+    plot.setDomainAxis(xAxis);
+    ChartPanel panel = new ChartPanel(chart);
+    ChartViewController chartViewController = new ChartViewController(panel, title);
+    //chartViewController.display(panel);
+
+    this.drawNonLinearRegressionLine(dataset, chart);
+
+    return null;
+  }
+
+  public String dataHandlerPoly(List<String> selectedFields,
+      String characterNameSType, String chartColorSType) {
+
+    String yAxisLabel = selectedFields.get(0);
+
+    List<String> stateList = charRecord.fieldAndValues.get(characterNameSType);
+    List<Double> stateValues = numericRecord.fieldAndValues.get(yAxisLabel);
+
+    String[] stockArr = new String[stateList.size()];
+    stockArr = stateList.toArray(stockArr);
+
+    ValueAxis xAxis = new SymbolAxis(characterNameSType, stockArr);
+    xAxis.setVerticalTickLabels(true);
+
+    XYSeries series1 = new XYSeries("Polynomial Regression Chart");
+
+    for (int i=2; i<=52; i++) {
+      series1.add(i, stateValues.get(i-2));
+    }
+    XYDataset dataset = new XYSeriesCollection(series1);
+
+
+    String title = characterNameSType + " vs " + yAxisLabel;
+
+    JFreeChart chart = ChartFactory.createScatterPlot(title,
+        characterNameSType, yAxisLabel, dataset);
+
+    XYPlot plot = (XYPlot) chart.getPlot();
+    plot.setBackgroundPaint(Color.WHITE);
+
+    plot.setDomainAxis(xAxis);
+    ChartPanel panel = new ChartPanel(chart);
+    ChartViewController chartViewController = new ChartViewController(panel, title);
+    //chartViewController.display(panel);
+
+    this.drawPolyRegressionLine(dataset, chart);
+
+    return null;
+  }
+
+  private void drawPolyRegressionLine(XYDataset inputData, JFreeChart chart) {
+    // Get the parameters 'a' and 'b' for an equation y = a + b * x,
+    // fitted to the inputData using ordinary least squares regression.
+    // a - regressionParameters[0], b - regressionParameters[1]
+    double regressionParameters[] = Regression.getPolynomialRegression(inputData,
+        0, 2);
+
+    double myArr[] = new double[regressionParameters.length - 1];
+
+    for (int i=0; i < regressionParameters.length-1; i++) {
+      myArr[i] = regressionParameters[i];
+    }
+
+    // Prepare a line function using the found parameters
+    Function2D curve = new PolynomialFunction2D(myArr);
+
+    XYDataset dataset = DatasetUtilities.sampleFunction2D(curve,
+        0.0, 50.0, 100, "Poly Regression Line");
+
+    XYLineAndShapeRenderer renderer2 = new XYLineAndShapeRenderer(true,
+        false);
+    // Draw the line dataset
+    XYPlot xyplot = chart.getXYPlot();
+    xyplot.setDataset(1, dataset);
+    renderer2.setSeriesPaint(0, Color.BLACK);
+    xyplot.setRenderer(1, renderer2);
+
+  }
+
+  private void drawNonLinearRegressionLine(XYDataset inputData, JFreeChart chart) {
+    // Get the parameters 'a' and 'b' for an equation y = a + b * x,
+    // fitted to the inputData using ordinary least squares regression.
+    // a - regressionParameters[0], b - regressionParameters[1]
+    double regressionParameters[] = Regression.getPowerRegression(inputData,
+        0);
+
+    // Prepare a line function using the found parameters
+    Function2D curve = new PowerFunction2D(regressionParameters[0],
+        regressionParameters[1]);
+
+    XYDataset dataset = DatasetUtilities.sampleFunction2D(curve,
+        0.0, 50.0, 100, "Power Regression Line");
+
+    XYLineAndShapeRenderer renderer2 = new XYLineAndShapeRenderer(true,
+        false);
+    // Draw the line dataset
+    XYPlot xyplot = chart.getXYPlot();
+    xyplot.setDataset(1, dataset);
+    renderer2.setSeriesPaint(0, Color.BLACK);
+    xyplot.setRenderer(1, renderer2);
+
+  }
+
+  private Color getColorByName(String colorName) {
+    Random random = new Random();
+    if (colorName.equalsIgnoreCase("Normal")) {
+      return Color.RED;
+    } else if (colorName.equalsIgnoreCase("Pastel")) {
+      final float hue = random.nextFloat();
+      // Saturation between 0.1 and 0.3
+      final float saturation = (random.nextInt(2000) + 1000) / 10000f;
+      final float luminance = 0.9f;
+      return Color.getHSBColor(hue, saturation, luminance);
+    } else {
+      final float hue = random.nextFloat();
+      final float saturation = 0.9f;// 1.0 for brilliant, 0.0 for dull
+      final float luminance = 1.0f; // 1.0 for brighter, 0.0 for black
+      return Color.getHSBColor(hue, saturation, luminance);
+    }
+  }
+
+  private void drawRegressionLine(XYDataset inputData, JFreeChart chart) {
+    // Get the parameters 'a' and 'b' for an equation y = a + b * x,
+    // fitted to the inputData using ordinary least squares regression.
+    // a - regressionParameters[0], b - regressionParameters[1]
+    double regressionParameters[] = Regression.getOLSRegression(inputData,
+        0);
+
+    // Prepare a line function using the found parameters
+    LineFunction2D linefunction2d = new LineFunction2D(
+        regressionParameters[0], regressionParameters[1]);
+
+    // Creates a dataset by taking sample values from the line function
+    XYDataset dataset = DatasetUtilities.sampleFunction2D(linefunction2d,
+        0D, 300, 100, "Linear Regression Line");
+
+    // Draw the line dataset
+    XYPlot xyplot = chart.getXYPlot();
+    xyplot.setDataset(1, dataset);
+    XYLineAndShapeRenderer xylineandshaperenderer = new XYLineAndShapeRenderer(
+        true, false);
+    xylineandshaperenderer.setSeriesPaint(0, Color.BLACK);
+    xyplot.setRenderer(1, xylineandshaperenderer);
+  }
+
+  private void drawInputPoint(double x, double y, JFreeChart chart) {
+    // Create a new dataset with only one row
+    XYSeriesCollection dataset = new XYSeriesCollection();
+    String title = "Input area: " + x + ", Price: " + y;
+    XYSeries series = new XYSeries(title);
+    series.add(x, y);
+    dataset.addSeries(series);
+
+    XYPlot plot = (XYPlot) chart.getPlot();
+    plot.setDataset(2, dataset);
+    XYItemRenderer renderer = new XYLineAndShapeRenderer(false, true);
+    plot.setRenderer(2, renderer);
+  }
 }
