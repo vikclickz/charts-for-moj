@@ -843,7 +843,7 @@ public class DbfReadController {
   }
 
   public String dataHandlerPoly(List<String> selectedFields,
-      String characterNameSType, String chartColorSType) {
+      String characterNameSType, String chartColorSType, Integer order) {
 
     String yAxisLabel = selectedFields.get(0);
 
@@ -877,17 +877,17 @@ public class DbfReadController {
     ChartViewController chartViewController = new ChartViewController(panel, title);
     //chartViewController.display(panel);
 
-    this.drawPolyRegressionLine(dataset, chart);
+    this.drawPolyRegressionLine(dataset, chart, order);
 
     return null;
   }
 
-  private void drawPolyRegressionLine(XYDataset inputData, JFreeChart chart) {
+  private void drawPolyRegressionLine(XYDataset inputData, JFreeChart chart, Integer order) {
     // Get the parameters 'a' and 'b' for an equation y = a + b * x,
     // fitted to the inputData using ordinary least squares regression.
     // a - regressionParameters[0], b - regressionParameters[1]
     double regressionParameters[] = Regression.getPolynomialRegression(inputData,
-        0, 2);
+        0, order);
 
     double myArr[] = new double[regressionParameters.length - 1];
 

@@ -5,6 +5,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -25,10 +26,13 @@ public class PolynomialPanelGUI extends JPanel {
   private JComboBox<String> chartjcb;
   private JComboBox<String> chartcolorjcb;
   private JComboBox<String> charNamejcb;
+  private JComboBox<Integer> chartOrderJcb;
   private JButton selectbtn;
   String barchartSType;
   String chartColorSType;
   String characterNameSType;
+  Integer nonLinearRegressionOrder = 2;
+  private Integer[] regressionOrder = {2,3};
 
   public PolynomialPanelGUI(List<String> numericNameList, List<String> charNameList) {
     characterNameTypes = charNameList.toArray(new String[charNameList.size()]);
@@ -39,7 +43,7 @@ public class PolynomialPanelGUI extends JPanel {
       attributeList.addElement(attributeNames.get(i));
     }
     // set layout
-    setLayout(new GridLayout(2, 5));
+    setLayout(new GridLayout(3, 5));
 
     // set combobox for char Name type
     charNamejcb = new JComboBox<String>(characterNameTypes);
@@ -63,6 +67,19 @@ public class PolynomialPanelGUI extends JPanel {
     attributeSelectList.setAutoscrolls(getVerifyInputWhenFocusTarget());
     scrollPane.setViewportView(attributeSelectList);
     add(scrollPane);
+
+    chartOrderJcb = new JComboBox<Integer>(regressionOrder);
+    chartOrderJcb.setAutoscrolls(getVerifyInputWhenFocusTarget());
+    add(chartOrderJcb);
+
+    // things to do upon selecting the type of chart that is needed
+    chartOrderJcb.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        JComboBox<String> characterNameType = (JComboBox<String>) e.getSource();
+        nonLinearRegressionOrder = (Integer) characterNameType.getSelectedItem();
+      }
+    });
+
     // add a button to show the list of attributes selected
     selectbtn = new JButton("Select Done");
     add(selectbtn);
@@ -82,7 +99,7 @@ public class PolynomialPanelGUI extends JPanel {
           }
           DbfReadController dbfread = DbfReadController.getInstance();
           dbfread.dataHandlerPoly(selectedFields, characterNameSType,
-              chartColorSType);
+              chartColorSType, nonLinearRegressionOrder);
         }
       }
     });
