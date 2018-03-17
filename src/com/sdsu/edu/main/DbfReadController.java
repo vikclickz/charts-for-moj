@@ -1,6 +1,6 @@
 package com.sdsu.edu.main;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.DataOutput;
@@ -19,39 +19,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.Vector;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
-import com.sdsu.edu.main.DbfReadController.CharacterRecord;
-import com.sdsu.edu.main.DbfReadController.DBFException;
-import com.sdsu.edu.main.DbfReadController.DBFField;
-import com.sdsu.edu.main.DbfReadController.DBFHeader;
-import com.sdsu.edu.main.DbfReadController.DBFReader;
-import com.sdsu.edu.main.DbfReadController.DbfUtils;
-import com.sdsu.edu.main.DbfReadController.NumericRecord;
-import javax.swing.JTabbedPane;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.SymbolAxis;
 import org.jfree.chart.axis.ValueAxis;
-import org.jfree.chart.plot.FastScatterPlot;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.category.ScatterRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
-import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.function.Function2D;
 import org.jfree.data.function.LineFunction2D;
 import org.jfree.data.function.PolynomialFunction2D;
 import org.jfree.data.function.PowerFunction2D;
-import org.jfree.data.gantt.TaskSeries;
-import org.jfree.data.gantt.TaskSeriesCollection;
 import org.jfree.data.general.DatasetUtilities;
 import org.jfree.data.statistics.Regression;
-import org.jfree.data.xy.DefaultXYDataset;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;

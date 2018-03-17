@@ -18,19 +18,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-
 import javax.swing.JPanel;
 import javax.swing.ToolTipManager;
-
-import com.sdsu.edu.main.ChartController;
-import com.sdsu.edu.main.ChartController.Axis;
-import com.sdsu.edu.main.ChartController.Bar;
-import com.sdsu.edu.main.ChartController.DataSet;
-import com.sdsu.edu.main.ChartController.HorizontalBarController;
-import com.sdsu.edu.main.ChartController.MultiBar;
-import com.sdsu.edu.main.ChartController.MultiBarChartHPanel;
-import com.sdsu.edu.main.ChartController.PieChartPanel;
-import com.sdsu.edu.main.ChartController.PieLegendPanel;
 
 /*
  * The Rendering of charts both pie and bar-vertical and horizontal
