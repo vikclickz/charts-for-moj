@@ -744,7 +744,7 @@ public class DbfReadController {
     return null;
   } // end dataHandler
 
-  public String dataHandler(List<String> selectedFields,
+  public void lineRegressionDataHandler(List<String> selectedFields,
       String characterNameSType, String chartColorSType) {
 
     String yAxisLabel = selectedFields.get(0);
@@ -781,8 +781,6 @@ public class DbfReadController {
     //chartViewController.display(panel);
 
     this.drawRegressionLine(dataset, chart);
-
-    return null;
   }
 
   public String dataHandlerPower(List<String> selectedFields,

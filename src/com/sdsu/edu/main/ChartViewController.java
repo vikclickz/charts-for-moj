@@ -40,105 +40,7 @@ public class ChartViewController extends JFrame implements ActionListener {
   private JSplitPane splitPane;
   PrinterJob printJob;
   BufferedImage image = null;
-
-
-  public void display(Container contentPane) {
-    //setPreferredSize(new Dimension(1000, 1000));
-    setContentPane(contentPane);
-    setTitle("THE CHARTING TOOL");
-    setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
-    setVisible(true);
-  }
-
-  public ChartViewController() {}
-
-//  public ChartViewController(ChartPanel contentPane) {
-//    setBounds(200, 200, 700, 400);
-//    contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-//    contentPane.setLayout(new BorderLayout(0, 0));
-//    JFreeChart chart = contentPane.getChart();
-//
-//    // create a button to print the chart
-//    printBtn = new JButton("Print Chart");
-//    // create a button to change the title of the chart
-//    titleChangeBtn = new JButton("Change Title");
-//    // Create a field to enter new Title
-//    chartTitleField = new JTextField(10);
-//    // create new Label with "Horizontal Bar Chart" as default chart title.
-//    chartTitleLabel = new JLabel(chart.getTitle().getText());
-//    // put fields and buttons in one panel and labels into a separate panel
-//    JPanel tmpPanel1 = new JPanel();
-//    tmpPanel1.add(printBtn);
-//    tmpPanel1.add(titleChangeBtn);
-//    tmpPanel1.add(chartTitleField);
-//    JPanel tmpPanel2 = new JPanel();
-//    tmpPanel2.add(chartTitleLabel);
-//    // finally. put all those into TopPane
-//    JPanel topPanel = new JPanel();
-//    topPanel.setLayout(new GridLayout(1, 2));
-//    topPanel.add(tmpPanel1);
-//    topPanel.add(tmpPanel2);
-//    // Add TopPane to the frame
-//    contentPane.add(topPanel, BorderLayout.NORTH);
-//    // Set actions for the buttons
-//    printBtn.setActionCommand("printChart");
-//    printBtn.addActionListener(this);
-//    // Set actions for the buttons
-//    titleChangeBtn.setActionCommand("changeTitle");
-//    titleChangeBtn.addActionListener(this);
-//    setContentPane(contentPane);
-//    setTitle("THE CHARTING TOOL");
-//    // setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
-//    setVisible(true);
-//  } // end ChartViewFrameGUI for Horiz Multi Bar Chart
-
-  public ChartViewController(ChartPanel contentPane) {
-    JPanel mainPanel = new JPanel();
-    setBounds(200, 200, 700, 400);
-    mainPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-    mainPanel.setLayout(new BorderLayout(0, 0));
-    //JFreeChart chart = contentPane.getChart();
-
-    // create a button to print the chart
-    printBtn = new JButton("Print Chart");
-    // create a button to change the title of the chart
-    titleChangeBtn = new JButton("Change Title");
-    // Create a field to enter new Title
-    chartTitleField = new JTextField(10);
-    // create new Label with "Horizontal Bar Chart" as default chart title.
-    chartTitleLabel = new JLabel("abcd");
-    // put fields and buttons in one panel and labels into a separate panel
-    JPanel tmpPanel1 = new JPanel();
-    tmpPanel1.add(printBtn);
-    tmpPanel1.add(titleChangeBtn);
-    tmpPanel1.add(chartTitleField);
-    JPanel tmpPanel2 = new JPanel();
-    tmpPanel2.add(chartTitleLabel);
-    // finally. put all those into TopPane
-    JPanel topPanel = new JPanel();
-    topPanel.setLayout(new GridLayout(1, 2));
-    topPanel.add(tmpPanel1);
-    topPanel.add(tmpPanel2);
-
-    JPanel bottomPanel = new JPanel();
-    bottomPanel.setLayout(new GridLayout(1, 1));
-    bottomPanel.add(contentPane);
-    bottomPanel.setAutoscrolls(true);
-    // Add TopPane to the frame
-    mainPanel.add(topPanel, BorderLayout.PAGE_START);
-    mainPanel.add(bottomPanel, BorderLayout.CENTER);
-    // Set actions for the buttons
-    printBtn.setActionCommand("printChart");
-    printBtn.addActionListener(this);
-    // Set actions for the buttons
-    titleChangeBtn.setActionCommand("changeTitle");
-    titleChangeBtn.addActionListener(this);
-    setContentPane(mainPanel);
-    setTitle("THE CHARTING TOOL");
-    // setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
-    setVisible(true);
-    setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
-  } // end ChartViewFrameGUI for Horiz Multi Bar Chart
+  JFreeChart chart;
 
 
   public ChartViewController(ChartPanel contentPane, String title) {
@@ -146,7 +48,7 @@ public class ChartViewController extends JFrame implements ActionListener {
     setBounds(200, 200, 700, 400);
     mainPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
     mainPanel.setLayout(new BorderLayout(0, 0));
-    //JFreeChart chart = contentPane.getChart();
+    this.chart = contentPane.getChart();
 
     // create a button to print the chart
     printBtn = new JButton("Print Chart");
@@ -187,7 +89,7 @@ public class ChartViewController extends JFrame implements ActionListener {
     // setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
     setVisible(true);
     setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
-  } // end ChartViewFrameGUI for Horiz Multi Bar Chart
+  }
 
   @Override
   public void actionPerformed(ActionEvent e) {
@@ -240,6 +142,7 @@ public class ChartViewController extends JFrame implements ActionListener {
       }
     } else if (e.getActionCommand().equals("changeTitle")) {
       chartTitleLabel.setText(chartTitleField.getText());
+      chart.setTitle(chartTitleField.getText());
       //chartTitleField.hide();
     } else if (e.getActionCommand().equals("changeXAxisLabel")) {
       xAxisLabelField.hide();

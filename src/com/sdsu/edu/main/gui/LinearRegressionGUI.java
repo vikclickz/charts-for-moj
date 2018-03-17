@@ -79,7 +79,7 @@ public class LinearRegressionGUI extends JPanel {
             characterNameSType = (String) charNamejcb.getSelectedItem();
           }
           DbfReadController dbfread = DbfReadController.getInstance();
-          dbfread.dataHandler(selectedFields, characterNameSType,
+          dbfread.lineRegressionDataHandler(selectedFields, characterNameSType,
               chartColorSType);
         }
       }
