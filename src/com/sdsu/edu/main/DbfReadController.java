@@ -778,7 +778,6 @@ public class DbfReadController {
     plot.setDomainAxis(xAxis);
     ChartPanel panel = new ChartPanel(chart);
     ChartViewController chartViewController = new ChartViewController(panel, title);
-    //chartViewController.display(panel);
 
     this.drawRegressionLine(dataset, chart);
   }

@@ -23,21 +23,14 @@ import org.jfree.chart.JFreeChart;
 public class ChartViewController extends JFrame implements ActionListener {
 
   private JPanel contentPane;
-  boolean sortflag = false;
-  public ChartController.DataSet[] data1;
-  public ChartController.DataSet[] sortedData1;
   private JLabel chartTitleLabel; // JLabel chartTitle;
-  private JLabel xAxisLabel; // JLabel xAxis label;
-  private JLabel yAxisLabel; // JLabel yAxis label;
   private JTextField chartTitleField; // Field to write the title
   private JTextField xAxisLabelField; // Field to write the xAxis label
   private JTextField yAxisLabelField; // Field to write the yAxis label
-  private JButton sortBtn; // Button to sort the data
   private JButton titleChangeBtn; // Button to change the title of the chart
   private JButton xAxisLabelChangeBtn; // Button to change the xAxis label
   private JButton yAxisLabelChangeBtn; // Button to change the yAxis label
   private JButton printBtn; // Button to print the chart
-  private JSplitPane splitPane;
   PrinterJob printJob;
   BufferedImage image = null;
   JFreeChart chart;
@@ -56,6 +49,19 @@ public class ChartViewController extends JFrame implements ActionListener {
     titleChangeBtn = new JButton("Change Title");
     // Create a field to enter new Title
     chartTitleField = new JTextField(10);
+
+
+    // create a button to change the title of the chart
+    xAxisLabelChangeBtn = new JButton("Change X Axis");
+    // Create a field to enter new Title
+    xAxisLabelField = new JTextField(10);
+
+
+    // create a button to change the title of the chart
+    yAxisLabelChangeBtn = new JButton("Change Y Axis");
+    // Create a field to enter new Title
+    yAxisLabelField = new JTextField(10);
+
     // create new Label with "Horizontal Bar Chart" as default chart title.
     chartTitleLabel = new JLabel(title);
     // put fields and buttons in one panel and labels into a separate panel
@@ -63,6 +69,12 @@ public class ChartViewController extends JFrame implements ActionListener {
     tmpPanel1.add(printBtn);
     tmpPanel1.add(titleChangeBtn);
     tmpPanel1.add(chartTitleField);
+
+    tmpPanel1.add(xAxisLabelChangeBtn);
+    tmpPanel1.add(xAxisLabelField);
+
+    tmpPanel1.add(yAxisLabelChangeBtn);
+    tmpPanel1.add(yAxisLabelField);
     JPanel tmpPanel2 = new JPanel();
     tmpPanel2.add(chartTitleLabel);
     // finally. put all those into TopPane
@@ -84,6 +96,13 @@ public class ChartViewController extends JFrame implements ActionListener {
     // Set actions for the buttons
     titleChangeBtn.setActionCommand("changeTitle");
     titleChangeBtn.addActionListener(this);
+
+    xAxisLabelChangeBtn.setActionCommand("changeXAxisLabel");
+    xAxisLabelChangeBtn.addActionListener(this);
+
+    yAxisLabelChangeBtn.setActionCommand("changeYAxisLabel");
+    yAxisLabelChangeBtn.addActionListener(this);
+
     setContentPane(mainPanel);
     setTitle("THE CHARTING TOOL");
     // setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
@@ -143,11 +162,10 @@ public class ChartViewController extends JFrame implements ActionListener {
     } else if (e.getActionCommand().equals("changeTitle")) {
       chartTitleLabel.setText(chartTitleField.getText());
       chart.setTitle(chartTitleField.getText());
-      //chartTitleField.hide();
     } else if (e.getActionCommand().equals("changeXAxisLabel")) {
-      xAxisLabelField.hide();
+      chart.getXYPlot().getDomainAxis().setLabel(xAxisLabelField.getText());
     } else if (e.getActionCommand().equals("changeYAxisLabel")) {
-      yAxisLabelField.hide();
+      chart.getXYPlot().getRangeAxis().setLabel(yAxisLabelField.getText());
     }
   }
 }
