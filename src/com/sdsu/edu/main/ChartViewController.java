@@ -1,20 +1,17 @@
 package com.sdsu.edu.main;
 
-import com.sdsu.edu.main.ChartController.MultiBarChartHPanel;
+import com.sdsu.edu.main.print.PrintUtility;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.awt.print.PageFormat;
-import java.awt.print.Printable;
-import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.PrintRequestAttributeSet;
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -113,52 +110,7 @@ public class ChartViewController extends JFrame implements ActionListener {
   @Override
   public void actionPerformed(ActionEvent e) {
     if (e.getActionCommand().equals("printChart")) {
-      try {
-        Toolkit tool = Toolkit.getDefaultToolkit();
-        Dimension d = tool.getScreenSize();
-        Rectangle rect = new Rectangle(d);
-        Robot robot = new Robot();
-        Thread.sleep(2000);
-        File f = new File("screenshot.jpg");
-        BufferedImage img = robot.createScreenCapture(rect);
-        ImageIO.write(img, "jpeg", f);
-        tool.beep();
-        JOptionPane.showMessageDialog(null, "Set printer settings");
-      } catch (Exception et) {
-        et.printStackTrace();
-      }
-      try {
-        image = ImageIO.read(new File("screenshot.jpg"));
-      } catch (IOException e2) {
-        e2.printStackTrace();
-      }
-      printJob = PrinterJob.getPrinterJob();
-      PageFormat preformat = printJob.defaultPage();
-      PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
-
-      preformat = printJob.pageDialog(aset);
-      printJob.setPrintable(new Printable() {
-
-        public int print(Graphics g, PageFormat preformat, int pageIndex) throws PrinterException {
-
-          if (pageIndex != 0) {
-            return NO_SUCH_PAGE;
-          } else {
-            int pWidth = 0;
-            int pHeight = 0;
-            pWidth = (int) Math.min(preformat.getImageableWidth(), (double) image.getWidth());
-            pHeight = pWidth * image.getHeight() / image.getWidth();
-            g.drawImage(image, (int) preformat.getImageableX(), (int) preformat.getImageableY(),
-                pWidth, pHeight, null);
-            return PAGE_EXISTS;
-          }
-        }
-      }, preformat);
-      try {
-        printJob.print();
-      } catch (PrinterException e1) {
-        e1.printStackTrace();
-      }
+      new PrintUtility(this.chart).createChartPrintJob();
     } else if (e.getActionCommand().equals("changeTitle")) {
       chartTitleLabel.setText(chartTitleField.getText());
       chart.setTitle(chartTitleField.getText());
