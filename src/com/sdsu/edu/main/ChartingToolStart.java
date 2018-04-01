@@ -1,5 +1,6 @@
 package com.sdsu.edu.main;
 
+import com.sdsu.edu.main.controller.db.DbfReadController;
 import com.sdsu.edu.main.gui.BarPanelGUI;
 import com.sdsu.edu.main.gui.LinearRegressionGUI;
 import com.sdsu.edu.main.gui.PiePanelGUI;
@@ -13,6 +14,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -41,6 +44,12 @@ class ChartingToolStart {
     JButton polyBtn = new JButton("POLY", new ImageIcon("./src/data/polyregression.png"));
     List<String> numericList;
     List<String> charList;
+    LinearRegressionGUI linearRegressionGUI;
+    BarPanelGUI barPanelGUI;
+    PiePanelGUI piePanelGUI;
+    PowerRegressionGUI powerRegressionGUI;
+    PolynomialPanelGUI polynomialPanelGUI;
+    private List<JPanel> panelList = new ArrayList<>();
 
     public ChartTypeFrameGUI() {
       setTitle("Charting");
@@ -71,7 +80,10 @@ class ChartingToolStart {
       firstPanel.add(piebtn);
       piebtn.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          add(new PiePanelGUI(numericList, charList));
+          checkL();
+          piePanelGUI = new PiePanelGUI(numericList, charList);
+          panelList.add(piePanelGUI);
+          add(piePanelGUI);
           setVisible(true);
         }
       });
@@ -79,7 +91,10 @@ class ChartingToolStart {
       firstPanel.add(barbtn);
       barbtn.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          add(new BarPanelGUI(numericList, charList));
+          checkL();
+          barPanelGUI = new BarPanelGUI(numericList, charList);
+          panelList.add(barPanelGUI);
+          add(barPanelGUI);
           setVisible(true);
         }
       });
@@ -88,8 +103,11 @@ class ChartingToolStart {
       firstPanel.add(scatterbtn);
       scatterbtn.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          add(new LinearRegressionGUI(numericList, charList));
-          setVisible(true);
+            checkL();
+            linearRegressionGUI = new LinearRegressionGUI(numericList, charList);
+            panelList.add(linearRegressionGUI);
+            add(linearRegressionGUI);
+            setVisible(true);
         }
       });
 
@@ -97,7 +115,10 @@ class ChartingToolStart {
       firstPanel.add(nonLinearBtn);
       nonLinearBtn.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          add(new PowerRegressionGUI(numericList, charList));
+          checkL();
+          powerRegressionGUI = new PowerRegressionGUI(numericList, charList);
+          panelList.add(powerRegressionGUI);
+          add(powerRegressionGUI);
           setVisible(true);
         }
       });
@@ -106,11 +127,21 @@ class ChartingToolStart {
       firstPanel.add(polyBtn);
       polyBtn.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          add(new PolynomialPanelGUI(numericList, charList));
+          checkL();
+          polynomialPanelGUI = new PolynomialPanelGUI(numericList, charList);
+          panelList.add(polynomialPanelGUI);
+          add(polynomialPanelGUI);
           setVisible(true);
         }
       });
       setVisible(true);
     } // End Constructor
+
+    private void checkL() {
+      for (JPanel panel : panelList) {
+          remove(panel);
+      }
+    }
+
   }
 }
