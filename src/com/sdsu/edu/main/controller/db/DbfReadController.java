@@ -1,5 +1,7 @@
-package com.sdsu.edu.main;
+package com.sdsu.edu.main.controller.db;
 
+import com.sdsu.edu.main.view.ChartViewController;
+import com.sdsu.edu.main.controller.ChartController;
 import java.awt.Color;
 import java.io.DataInput;
 import java.io.DataInputStream;

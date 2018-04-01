@@ -7,7 +7,7 @@ import java.awt.RenderingHints;
 
 import javax.swing.JPanel;
 
-import com.sdsu.edu.main.ChartController.DataSet;
+import com.sdsu.edu.main.controller.ChartController.DataSet;
 
 public class VerticalBarLegendPanel extends JPanel {
   private DataSet[] dataset;

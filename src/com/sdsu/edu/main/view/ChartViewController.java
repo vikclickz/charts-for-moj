@@ -1,4 +1,4 @@
-package com.sdsu.edu.main;
+package com.sdsu.edu.main.view;
 
 import com.sdsu.edu.main.print.PrintUtility;
 import java.awt.BorderLayout;

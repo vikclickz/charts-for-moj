@@ -1,5 +1,6 @@
-package com.sdsu.edu.main;
+package com.sdsu.edu.main.controller;
 
+import com.sdsu.edu.main.gui.ChartViewFrameGUI;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;

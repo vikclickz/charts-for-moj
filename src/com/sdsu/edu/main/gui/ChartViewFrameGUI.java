@@ -1,5 +1,7 @@
-package com.sdsu.edu.main;
+package com.sdsu.edu.main.gui;
 
+import com.sdsu.edu.main.VerticalBarLegendPanel;
+import com.sdsu.edu.main.controller.ChartController;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -34,16 +36,13 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import com.sdsu.edu.main.ChartController.Axis;
-import com.sdsu.edu.main.ChartController.Bar;
-import com.sdsu.edu.main.ChartController.BarChartVPanel;
-import com.sdsu.edu.main.ChartController.DataSet;
-import com.sdsu.edu.main.ChartController.MultiBar;
-import com.sdsu.edu.main.ChartController.MultiBarChartHPanel;
-import com.sdsu.edu.main.ChartController.MultiBarChartVPanel;
-import com.sdsu.edu.main.ChartController.PieChartPanel;
-import com.sdsu.edu.main.ChartController.PieLegendPanel;
-import com.sdsu.edu.main.VerticalBarLegendPanel;
+import com.sdsu.edu.main.controller.ChartController.Axis;
+import com.sdsu.edu.main.controller.ChartController.Bar;
+import com.sdsu.edu.main.controller.ChartController.BarChartVPanel;
+import com.sdsu.edu.main.controller.ChartController.DataSet;
+import com.sdsu.edu.main.controller.ChartController.MultiBar;
+import com.sdsu.edu.main.controller.ChartController.MultiBarChartHPanel;
+import com.sdsu.edu.main.controller.ChartController.MultiBarChartVPanel;
 
 /*
  * Finally present in a GUi where user can sort and re render, print,

@@ -1,6 +1,6 @@
 package com.sdsu.edu.main.gui;
 
-import com.sdsu.edu.main.DbfReadController;
+import com.sdsu.edu.main.controller.db.DbfReadController;
 import com.sdsu.edu.main.constant.GUILabelConstants;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
