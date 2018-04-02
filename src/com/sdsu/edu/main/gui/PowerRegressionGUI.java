@@ -82,8 +82,7 @@ public class PowerRegressionGUI extends JPanel {
             characterNameSType = (String) charNamejcb.getSelectedItem();
           }
           MapObjectChartController mapObjectChartController = MapObjectChartController.getInstance();
-          mapObjectChartController.createPowerRegressionChart(selectedFields, characterNameSType,
-              chartColorSType);
+          mapObjectChartController.createPowerRegressionChart(selectedFields, characterNameSType);
         }
       }
     });

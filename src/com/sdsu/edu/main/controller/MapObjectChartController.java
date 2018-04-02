@@ -24,6 +24,9 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 public class MapObjectChartController {
 
+  public static final String POLYNOMIAL_REGRESSION_CHART = "Polynomial Regression Chart";
+  public static final String POWER_REGRESSION_CHART = "Power Regression Chart";
+  public static final String LINEAR_REGRESSION_CHART = "Linear Regression Chart";
   private static MapObjectChartController mapObjectChartController = new MapObjectChartController();
   private ChartViewController chartViewController = new ChartViewController();
 
@@ -36,7 +39,7 @@ public class MapObjectChartController {
     String yAxisLabel = selectedFields.get(0);
 
     ChartModel chartModel = xyDatasetBuilder(selectedFields, xAxisLabel,
-        "Polynomial Regression Chart", yAxisLabel);
+        POLYNOMIAL_REGRESSION_CHART, yAxisLabel);
 
     String title = xAxisLabel + " vs " + yAxisLabel;
 
@@ -45,22 +48,20 @@ public class MapObjectChartController {
 
     XYPlot plot = (XYPlot) chart.getPlot();
     plot.setBackgroundPaint(Color.WHITE);
-
     plot.setDomainAxis(chartModel.getDomainAxis());
     ChartPanel panel = new ChartPanel(chart);
-    ChartViewController chartViewController = new ChartViewController();
     chartViewController.displayChart(panel, title);
 
     drawPolyRegressionLine(chartModel.getXyDataset(), chart, order);
   }
 
   public void createPowerRegressionChart(List<String> selectedFields,
-      String xAxisLabel, String chartColorSType) {
+      String xAxisLabel) {
 
     String yAxisLabel = selectedFields.get(0);
 
     ChartModel chartModel = xyDatasetBuilder(selectedFields, xAxisLabel,
-        "Power Regression Chart", yAxisLabel);
+        POWER_REGRESSION_CHART, yAxisLabel);
 
     String title = xAxisLabel + " vs " + yAxisLabel;
 
@@ -69,10 +70,8 @@ public class MapObjectChartController {
 
     XYPlot plot = (XYPlot) chart.getPlot();
     plot.setBackgroundPaint(Color.WHITE);
-
     plot.setDomainAxis(chartModel.getDomainAxis());
     ChartPanel panel = new ChartPanel(chart);
-    ChartViewController chartViewController = new ChartViewController();
     chartViewController.displayChart(panel, title);
 
     drawPowerRegressionLine(chartModel.getXyDataset(), chart);
@@ -83,7 +82,7 @@ public class MapObjectChartController {
     String yAxisLabel = selectedFields.get(0);
 
     ChartModel chartModel = xyDatasetBuilder(selectedFields, xAxisLabel,
-        "Linear Regression Chart", yAxisLabel);
+        LINEAR_REGRESSION_CHART, yAxisLabel);
 
     String title = xAxisLabel + " vs " + yAxisLabel;
 
@@ -179,19 +178,19 @@ public class MapObjectChartController {
 
 
   private ChartModel xyDatasetBuilder(List<String> selectedFields,
-      String characterNameSType, String chartTitle, String yAxisLabel) {
+      String xAxisLbl, String chartTitle, String yAxisLabel) {
 
     ChartModel chartModel = new ChartModel();
 
     List<String> stateList = DbfReadController.getInstance().getCharRecord().fieldAndValues
-        .get(characterNameSType);
+        .get(xAxisLbl);
     List<Double> stateValues = DbfReadController.getInstance().getNumericRecord().fieldAndValues
         .get(yAxisLabel);
 
     String[] stockArr = new String[stateList.size()];
     stockArr = stateList.toArray(stockArr);
 
-    ValueAxis xAxis = new SymbolAxis(characterNameSType, stockArr);
+    ValueAxis xAxis = new SymbolAxis(xAxisLbl, stockArr);
     xAxis.setVerticalTickLabels(true);
 
     XYSeries series1 = new XYSeries(chartTitle);
