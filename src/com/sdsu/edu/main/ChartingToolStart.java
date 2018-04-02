@@ -6,6 +6,7 @@ import com.sdsu.edu.main.gui.LinearRegressionGUI;
 import com.sdsu.edu.main.gui.PiePanelGUI;
 import com.sdsu.edu.main.gui.PolynomialPanelGUI;
 import com.sdsu.edu.main.gui.PowerRegressionGUI;
+import com.sdsu.edu.main.gui.ThreeDimensionalPanelGUI;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -15,7 +16,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -42,6 +42,7 @@ class ChartingToolStart {
     JButton scatterbtn = new JButton("SCATTER", new ImageIcon("./src/data/scatterplot3.png"));
     JButton nonLinearBtn = new JButton("NLNR", new ImageIcon("./src/data/nonlinear.png"));
     JButton polyBtn = new JButton("POLY", new ImageIcon("./src/data/polyregression.png"));
+    JButton threeDBtn = new JButton("3D", new ImageIcon("./src/data/threed.png"));
     List<String> numericList;
     List<String> charList;
     LinearRegressionGUI linearRegressionGUI;
@@ -49,6 +50,7 @@ class ChartingToolStart {
     PiePanelGUI piePanelGUI;
     PowerRegressionGUI powerRegressionGUI;
     PolynomialPanelGUI polynomialPanelGUI;
+    ThreeDimensionalPanelGUI threeDimensionalPanelGUI;
     private List<JPanel> panelList = new ArrayList<>();
 
     public ChartTypeFrameGUI() {
@@ -80,7 +82,7 @@ class ChartingToolStart {
       firstPanel.add(piebtn);
       piebtn.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          checkL();
+          clearPanelList();
           piePanelGUI = new PiePanelGUI(numericList, charList);
           panelList.add(piePanelGUI);
           add(piePanelGUI);
@@ -91,7 +93,7 @@ class ChartingToolStart {
       firstPanel.add(barbtn);
       barbtn.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          checkL();
+          clearPanelList();
           barPanelGUI = new BarPanelGUI(numericList, charList);
           panelList.add(barPanelGUI);
           add(barPanelGUI);
@@ -103,7 +105,7 @@ class ChartingToolStart {
       firstPanel.add(scatterbtn);
       scatterbtn.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-            checkL();
+            clearPanelList();
             linearRegressionGUI = new LinearRegressionGUI(numericList, charList);
             panelList.add(linearRegressionGUI);
             add(linearRegressionGUI);
@@ -115,7 +117,7 @@ class ChartingToolStart {
       firstPanel.add(nonLinearBtn);
       nonLinearBtn.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          checkL();
+          clearPanelList();
           powerRegressionGUI = new PowerRegressionGUI(numericList, charList);
           panelList.add(powerRegressionGUI);
           add(powerRegressionGUI);
@@ -127,17 +129,29 @@ class ChartingToolStart {
       firstPanel.add(polyBtn);
       polyBtn.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          checkL();
+          clearPanelList();
           polynomialPanelGUI = new PolynomialPanelGUI(numericList, charList);
           panelList.add(polynomialPanelGUI);
           add(polynomialPanelGUI);
           setVisible(true);
         }
       });
+
+      threeDBtn.setPreferredSize(new Dimension(100, 100));
+      firstPanel.add(threeDBtn);
+      threeDBtn.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          clearPanelList();
+          threeDimensionalPanelGUI = new ThreeDimensionalPanelGUI(numericList, charList);
+          panelList.add(threeDimensionalPanelGUI);
+          add(threeDimensionalPanelGUI);
+          setVisible(true);
+        }
+      });
       setVisible(true);
     } // End Constructor
 
-    private void checkL() {
+    private void clearPanelList() {
       for (JPanel panel : panelList) {
           remove(panel);
       }

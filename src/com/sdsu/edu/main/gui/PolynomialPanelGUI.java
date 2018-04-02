@@ -1,5 +1,6 @@
 package com.sdsu.edu.main.gui;
 
+import com.sdsu.edu.main.controller.MapObjectChartController;
 import com.sdsu.edu.main.controller.db.DbfReadController;
 import com.sdsu.edu.main.constant.GUILabelConstants;
 import java.awt.GridLayout;
@@ -97,9 +98,9 @@ public class PolynomialPanelGUI extends JPanel {
           if(characterNameSType == null) {
             characterNameSType = (String) charNamejcb.getSelectedItem();
           }
-          DbfReadController dbfread = DbfReadController.getInstance();
-          dbfread.dataHandlerPoly(selectedFields, characterNameSType,
-              chartColorSType, nonLinearRegressionOrder);
+          MapObjectChartController mapObjectChartController = MapObjectChartController.getInstance();
+          mapObjectChartController.createPolynomialRegressionChart(selectedFields,
+              characterNameSType, nonLinearRegressionOrder);
         }
       }
     });

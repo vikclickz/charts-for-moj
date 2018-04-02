@@ -1,7 +1,8 @@
 package com.sdsu.edu.main.gui;
 
+import com.sdsu.edu.main.constant.ChartType;
 import com.sdsu.edu.main.constant.GUILabelConstants;
-import com.sdsu.edu.main.controller.MapObjectChartController;
+import com.sdsu.edu.main.controller.db.DbfReadController;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,17 +16,23 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 
-public class LinearRegressionGUI extends JPanel {
+public class ThreeDimensionalPanelGUI extends JPanel {
+  private String[] barchartTypes = {"Horizontal", "Vertical"};
+  private String[] chartColorTypes = {"Normal", "Pastel", "Rainbow"};
   private String[] characterNameTypes;
   private List<String> attributeNames;
   final DefaultListModel<String> attributeList;
   final JList<String> attributeSelectList;
   public List<String> selectedFields;
   private JComboBox<String> charNamejcb;
+  private JComboBox<String> chartTypeComboBox;
   private JButton selectbtn;
+  String chartColorSType;
   String characterNameSType;
+  String chartTypeName = ChartType.BAR.getChartName();
+  private String[] chartType = {"Bar Chart","Pie Chart"};
 
-  public LinearRegressionGUI(List<String> numericNameList, List<String> charNameList) {
+  public ThreeDimensionalPanelGUI(List<String> numericNameList, List<String> charNameList) {
     characterNameTypes = charNameList.toArray(new String[charNameList.size()]);
     attributeNames = numericNameList;
     setSize(500, 500);
@@ -34,11 +41,13 @@ public class LinearRegressionGUI extends JPanel {
       attributeList.addElement(attributeNames.get(i));
     }
     // set layout
-    setLayout(new GridLayout(2, 5));
+    setLayout(new GridLayout(3, 5));
+
     // set combobox for char Name type
     charNamejcb = new JComboBox<String>(characterNameTypes);
     charNamejcb.setAutoscrolls(getVerifyInputWhenFocusTarget());
     add(charNamejcb);
+
     // things to do upon selecting the type of chart that is needed
     charNamejcb.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -46,7 +55,6 @@ public class LinearRegressionGUI extends JPanel {
         characterNameSType = (String) characterNameType.getSelectedItem();
       }
     });
-
     // set the list for numeric attributes available to select
     JScrollPane scrollPane = new JScrollPane();
     attributeSelectList = new JList<String>(attributeList);
@@ -57,6 +65,19 @@ public class LinearRegressionGUI extends JPanel {
     attributeSelectList.setAutoscrolls(getVerifyInputWhenFocusTarget());
     scrollPane.setViewportView(attributeSelectList);
     add(scrollPane);
+
+    chartTypeComboBox = new JComboBox<String>(chartType);
+    chartTypeComboBox.setAutoscrolls(getVerifyInputWhenFocusTarget());
+    add(chartTypeComboBox);
+
+    // things to do upon selecting the type of chart that is needed
+    chartTypeComboBox.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        JComboBox<String> characterNameType = (JComboBox<String>) e.getSource();
+        chartTypeName = (String) characterNameType.getSelectedItem();
+      }
+    });
+
     // add a button to show the list of attributes selected
     selectbtn = new JButton(GUILabelConstants.SUBMIT_BTN_LBL);
     add(selectbtn);
@@ -70,11 +91,13 @@ public class LinearRegressionGUI extends JPanel {
             data += obj + ", ";
             selectedFields.add((String) obj);
           }
+
           if(characterNameSType == null) {
             characterNameSType = (String) charNamejcb.getSelectedItem();
           }
-          MapObjectChartController mapObjectChartController = MapObjectChartController.getInstance();
-          mapObjectChartController.createLinearRegressionChart(selectedFields, characterNameSType);
+          DbfReadController dbfread = DbfReadController.getInstance();
+          dbfread.dataHandlerThreeDim(selectedFields, characterNameSType,
+              chartColorSType, chartTypeName);
         }
       }
     });

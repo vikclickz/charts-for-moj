@@ -1,5 +1,6 @@
 package com.sdsu.edu.main.gui;
 
+import com.sdsu.edu.main.controller.MapObjectChartController;
 import com.sdsu.edu.main.controller.db.DbfReadController;
 import com.sdsu.edu.main.constant.GUILabelConstants;
 import java.awt.GridLayout;
@@ -80,8 +81,8 @@ public class PowerRegressionGUI extends JPanel {
           if (characterNameSType == null) {
             characterNameSType = (String) charNamejcb.getSelectedItem();
           }
-          DbfReadController dbfread = DbfReadController.getInstance();
-          dbfread.dataHandlerPower(selectedFields, characterNameSType,
+          MapObjectChartController mapObjectChartController = MapObjectChartController.getInstance();
+          mapObjectChartController.createPowerRegressionChart(selectedFields, characterNameSType,
               chartColorSType);
         }
       }
