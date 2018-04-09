@@ -18,19 +18,13 @@ import javax.swing.ListSelectionModel;
 
 public class PowerRegressionGUI extends JPanel {
 
-  private String[] barchartTypes = {"Horizontal", "Vertical"};
-  private String[] chartColorTypes = {"Normal", "Pastel", "Rainbow"};
   private String[] characterNameTypes;
   private List<String> attributeNames;
   final DefaultListModel<String> attributeList;
   final JList<String> attributeSelectList;
   public List<String> selectedFields;
-  private JComboBox<String> chartjcb;
-  private JComboBox<String> chartcolorjcb;
   private JComboBox<String> charNamejcb;
   private JButton selectbtn;
-  String barchartSType;
-  String chartColorSType;
   String characterNameSType;
 
   public PowerRegressionGUI(List<String> numericNameList, List<String> charNameList) {

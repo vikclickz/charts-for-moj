@@ -17,20 +17,14 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 
 public class PolynomialPanelGUI extends JPanel {
-  private String[] barchartTypes = {"Horizontal", "Vertical"};
-  private String[] chartColorTypes = {"Normal", "Pastel", "Rainbow"};
   private String[] characterNameTypes;
   private List<String> attributeNames;
   final DefaultListModel<String> attributeList;
   final JList<String> attributeSelectList;
   public List<String> selectedFields;
-  private JComboBox<String> chartjcb;
-  private JComboBox<String> chartcolorjcb;
   private JComboBox<String> charNamejcb;
   private JComboBox<Integer> chartOrderJcb;
   private JButton selectbtn;
-  String barchartSType;
-  String chartColorSType;
   String characterNameSType;
   Integer nonLinearRegressionOrder = 2;
   private Integer[] regressionOrder = {2,3};
