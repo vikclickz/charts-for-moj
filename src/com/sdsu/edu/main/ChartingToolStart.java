@@ -39,10 +39,10 @@ class ChartingToolStart {
     JButton piebtn = new JButton("PIE", new ImageIcon("./src/data/piechartbtn.jpg"));
     JButton barbtn = new JButton("BAR", new ImageIcon("./src/data/barchartbtn.jpg"));
 
-    JButton scatterbtn = new JButton("SCATTER", new ImageIcon("./src/data/scatterplot3.png"));
+    JButton scatterbtn = new JButton("SCATTER", new ImageIcon("./src/data/linear_reg.png"));
     JButton nonLinearBtn = new JButton("NLNR", new ImageIcon("./src/data/nonlinear.png"));
-    JButton polyBtn = new JButton("POLY", new ImageIcon("./src/data/polyregression.png"));
-    JButton threeDBtn = new JButton("3D", new ImageIcon("./src/data/threed.png"));
+    JButton polyBtn = new JButton("POLY", new ImageIcon("./src/data/poly_reg.png"));
+    JButton threeDBtn = new JButton("3D", new ImageIcon("./src/data/three_dim.png"));
     List<String> numericList;
     List<String> charList;
     LinearRegressionGUI linearRegressionGUI;
