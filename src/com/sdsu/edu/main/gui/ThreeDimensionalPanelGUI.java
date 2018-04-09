@@ -2,7 +2,7 @@ package com.sdsu.edu.main.gui;
 
 import com.sdsu.edu.main.constant.ChartType;
 import com.sdsu.edu.main.constant.GUILabelConstants;
-import com.sdsu.edu.main.controller.db.DbfReadController;
+import com.sdsu.edu.main.controller.MapObjectChartController;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,8 +17,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 
 public class ThreeDimensionalPanelGUI extends JPanel {
-  private String[] barchartTypes = {"Horizontal", "Vertical"};
-  private String[] chartColorTypes = {"Normal", "Pastel", "Rainbow"};
+
   private String[] characterNameTypes;
   private List<String> attributeNames;
   final DefaultListModel<String> attributeList;
@@ -27,10 +26,9 @@ public class ThreeDimensionalPanelGUI extends JPanel {
   private JComboBox<String> charNamejcb;
   private JComboBox<String> chartTypeComboBox;
   private JButton selectbtn;
-  String chartColorSType;
   String characterNameSType;
   String chartTypeName = ChartType.BAR.getChartName();
-  private String[] chartType = {"Bar Chart","Pie Chart"};
+  private String[] chartType = {"Bar Chart", "Pie Chart"};
 
   public ThreeDimensionalPanelGUI(List<String> numericNameList, List<String> charNameList) {
     characterNameTypes = charNameList.toArray(new String[charNameList.size()]);
@@ -91,13 +89,16 @@ public class ThreeDimensionalPanelGUI extends JPanel {
             data += obj + ", ";
             selectedFields.add((String) obj);
           }
-
-          if(characterNameSType == null) {
+          if (characterNameSType == null) {
             characterNameSType = (String) charNamejcb.getSelectedItem();
           }
-          DbfReadController dbfread = DbfReadController.getInstance();
-          dbfread.dataHandlerThreeDim(selectedFields, characterNameSType,
-              chartColorSType, chartTypeName);
+          if (chartTypeName.contains(ChartType.BAR.getChartName())) {
+            MapObjectChartController mapObjectChartController = new MapObjectChartController();
+            mapObjectChartController.create3dBarChart(selectedFields, characterNameSType);
+          } else {
+            MapObjectChartController mapObjectChartController = new MapObjectChartController();
+            mapObjectChartController.create3dPieChart(selectedFields, characterNameSType);
+          }
         }
       }
     });

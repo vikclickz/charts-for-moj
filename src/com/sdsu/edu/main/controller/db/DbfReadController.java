@@ -751,42 +751,4 @@ public class DbfReadController {
     }  // end for
     return null;
   } // end dataHandler
-
-  public String dataHandlerThreeDim(List<String> selectedFields,
-      String characterNameSType, String chartColorSType, String order) {
-
-    String yAxisLabel = selectedFields.get(0);
-
-    List<String> stateList = charRecord.fieldAndValues.get(characterNameSType);
-    List<Double> stateValues = numericRecord.fieldAndValues.get(yAxisLabel);
-
-    String[] stockArr = new String[stateList.size()];
-    stockArr = stateList.toArray(stockArr);
-
-    ValueAxis xAxis = new SymbolAxis(characterNameSType, stockArr);
-    xAxis.setVerticalTickLabels(true);
-
-    XYSeries series1 = new XYSeries("Polynomial Regression Chart");
-
-    for (int i=2; i<=52; i++) {
-      series1.add(i, stateValues.get(i-2));
-    }
-    XYDataset dataset = new XYSeriesCollection(series1);
-
-
-    String title = characterNameSType + " vs " + yAxisLabel;
-
-    JFreeChart chart = ChartFactory.createScatterPlot(title,
-        characterNameSType, yAxisLabel, dataset);
-
-    XYPlot plot = (XYPlot) chart.getPlot();
-    plot.setBackgroundPaint(Color.WHITE);
-
-    plot.setDomainAxis(xAxis);
-    ChartPanel panel = new ChartPanel(chart);
-//    ChartViewController chartViewController = new ChartViewController(panel, title);
-    //chartViewController.display(panel);
-
-    return null;
-  }
 }

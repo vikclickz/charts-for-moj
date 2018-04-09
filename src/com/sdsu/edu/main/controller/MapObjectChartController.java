@@ -8,19 +8,25 @@ import java.util.List;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.SymbolAxis;
 import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.plot.PiePlot3D;
+import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.function.Function2D;
 import org.jfree.data.function.LineFunction2D;
 import org.jfree.data.function.PolynomialFunction2D;
 import org.jfree.data.function.PowerFunction2D;
 import org.jfree.data.general.DatasetUtilities;
+import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.statistics.Regression;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.jfree.util.Rotation;
 
 public class MapObjectChartController {
 
@@ -38,7 +44,7 @@ public class MapObjectChartController {
       String xAxisLabel, Integer order) {
     String yAxisLabel = selectedFields.get(0);
 
-    ChartModel chartModel = xyDatasetBuilder(selectedFields, xAxisLabel,
+    ChartModel chartModel = buildChartModel(selectedFields, xAxisLabel,
         POLYNOMIAL_REGRESSION_CHART, yAxisLabel);
 
     String title = xAxisLabel + " vs " + yAxisLabel;
@@ -60,7 +66,7 @@ public class MapObjectChartController {
 
     String yAxisLabel = selectedFields.get(0);
 
-    ChartModel chartModel = xyDatasetBuilder(selectedFields, xAxisLabel,
+    ChartModel chartModel = buildChartModel(selectedFields, xAxisLabel,
         POWER_REGRESSION_CHART, yAxisLabel);
 
     String title = xAxisLabel + " vs " + yAxisLabel;
@@ -81,7 +87,7 @@ public class MapObjectChartController {
       String xAxisLabel) {
     String yAxisLabel = selectedFields.get(0);
 
-    ChartModel chartModel = xyDatasetBuilder(selectedFields, xAxisLabel,
+    ChartModel chartModel = buildChartModel(selectedFields, xAxisLabel,
         LINEAR_REGRESSION_CHART, yAxisLabel);
 
     String title = xAxisLabel + " vs " + yAxisLabel;
@@ -97,6 +103,62 @@ public class MapObjectChartController {
     chartViewController.displayChart(panel, title);
 
     drawRegressionLine(chartModel.getXyDataset(), chart);
+  }
+
+  public void create3dPieChart(List<String> selectedFields,
+      String xAxisLabel) {
+
+    String yAxisLabel = selectedFields.get(0);
+
+    DefaultPieDataset defaultPieDataset = buildPieDataSet(xAxisLabel,
+        yAxisLabel);
+
+    String title = xAxisLabel + " vs " + yAxisLabel;
+
+    JFreeChart chart = ChartFactory.createPieChart3D(
+        title,  // chart title
+        defaultPieDataset,         // data
+        true,            // include legend
+        true,
+        true);
+
+    final PiePlot3D plot = (PiePlot3D) chart.getPlot();
+    plot.setStartAngle(10);
+    plot.setForegroundAlpha(0.60f);
+    plot.setInteriorGap(0.02);
+    plot.setDirection(Rotation.ANTICLOCKWISE);
+
+    ChartPanel panel = new ChartPanel(chart);
+    ChartViewController chartViewController = new ChartViewController();
+    chartViewController.displayChart(panel, title);
+  }
+
+  public void create3dBarChart(List<String> selectedFields,
+      String xAxisLabel) {
+
+    String yAxisLabel = selectedFields.get(0);
+
+    DefaultCategoryDataset defaultCategoryDataset = buildCategoryDataSet(xAxisLabel,
+        yAxisLabel);
+
+    String title = xAxisLabel + " vs " + yAxisLabel;
+
+    JFreeChart chart = ChartFactory.createBarChart3D(
+        title,  // chart title
+        xAxisLabel,
+        yAxisLabel,
+        defaultCategoryDataset,   // data
+        PlotOrientation.VERTICAL, // orientation
+        true,                     // include legend
+        true,                     // tooltips
+        false                     // urls
+    );
+
+    chart.getCategoryPlot().getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.UP_90);
+
+    ChartPanel panel = new ChartPanel(chart);
+    ChartViewController chartViewController = new ChartViewController();
+    chartViewController.displayChart(panel, title);
   }
 
   private void drawPolyRegressionLine(XYDataset inputData, JFreeChart chart, Integer order) {
@@ -176,8 +238,7 @@ public class MapObjectChartController {
     xyplot.setRenderer(1, xylineandshaperenderer);
   }
 
-
-  private ChartModel xyDatasetBuilder(List<String> selectedFields,
+  private ChartModel buildChartModel(List<String> selectedFields,
       String xAxisLbl, String chartTitle, String yAxisLabel) {
 
     ChartModel chartModel = new ChartModel();
@@ -207,5 +268,33 @@ public class MapObjectChartController {
     chartModel.setDomainAxis(xAxis);
     chartModel.setXyDataset(new XYSeriesCollection(series1));
     return chartModel;
+  }
+
+  private DefaultPieDataset buildPieDataSet(String xAxisLbl, String yAxisLabel) {
+    List<String> stateList = DbfReadController.getInstance().getCharRecord().fieldAndValues
+        .get(xAxisLbl);
+    List<Double> stateValues = DbfReadController.getInstance().getNumericRecord().fieldAndValues
+        .get(yAxisLabel);
+
+    DefaultPieDataset dataset = new DefaultPieDataset();
+
+    for (int i = 0; i < stateList.size(); i++) {
+      dataset.setValue(stateList.get(i), stateValues.get(i));
+    }
+    return dataset;
+  }
+
+  private DefaultCategoryDataset buildCategoryDataSet(String xAxisLbl, String yAxisLabel) {
+    List<String> stateList = DbfReadController.getInstance().getCharRecord().fieldAndValues
+        .get(xAxisLbl);
+    List<Double> stateValues = DbfReadController.getInstance().getNumericRecord().fieldAndValues
+        .get(yAxisLabel);
+
+    DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+    for (int i = 0; i < stateList.size(); i++) {
+      dataset.setValue(stateValues.get(i), xAxisLbl, stateList.get(i));
+    }
+    return dataset;
   }
 }
