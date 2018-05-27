@@ -15,6 +15,7 @@ import com.sdsu.edu.main.gui.PiePanelGUI;
 import com.sdsu.edu.main.gui.PolynomialPanelGUI;
 import com.sdsu.edu.main.gui.PowerRegressionGUI;
 import com.sdsu.edu.main.gui.ThreeDimensionalPanelGUI;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -25,11 +26,16 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /*
@@ -89,7 +95,21 @@ class ChartingToolStart {
         } // windowClosing
       });
       Container contentPane = getContentPane();
-      contentPane.add(firstPanel);
+      JPanel borderPanel = new JPanel(false);
+
+      Border paneEdge = BorderFactory.createEmptyBorder(10, 10, 10, 12);
+      Border blackline = BorderFactory.createLineBorder(Color.black);
+      borderPanel.setBorder(paneEdge);
+      borderPanel.setLayout(new BoxLayout(borderPanel,
+          BoxLayout.X_AXIS));
+
+      firstPanel.setBorder(blackline);
+
+      borderPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+      borderPanel.add(firstPanel);
+      borderPanel.setVisible(true);
+
+      contentPane.add(borderPanel);
       piebtn.setPreferredSize(new Dimension(100, 100));
       piebtn.setFocusable(true);
       piebtn.setToolTipText(PIE_CHART_TOOL_TIP);
