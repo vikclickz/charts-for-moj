@@ -1,6 +1,12 @@
 package com.sdsu.edu.main;
 
+import static com.sdsu.edu.main.constant.GUILabelConstants.BAR_CHART_TOOL_TIP;
 import static com.sdsu.edu.main.constant.GUILabelConstants.CHARTING_LABEL;
+import static com.sdsu.edu.main.constant.GUILabelConstants.LINEAR_REGRESSION_TOOL_TIP;
+import static com.sdsu.edu.main.constant.GUILabelConstants.PIE_CHART_TOOL_TIP;
+import static com.sdsu.edu.main.constant.GUILabelConstants.POLYNOMIAL_REGRESSION_TOOL_TIP;
+import static com.sdsu.edu.main.constant.GUILabelConstants.POWER_REGRESSION_TOOL_TIP;
+import static com.sdsu.edu.main.constant.GUILabelConstants.THREE_DIM_TOOL_TIP;
 
 import com.sdsu.edu.main.controller.db.DbfReadController;
 import com.sdsu.edu.main.gui.BarPanelGUI;
@@ -86,6 +92,7 @@ class ChartingToolStart {
       contentPane.add(firstPanel);
       piebtn.setPreferredSize(new Dimension(100, 100));
       piebtn.setFocusable(true);
+      piebtn.setToolTipText(PIE_CHART_TOOL_TIP);
       firstPanel.add(piebtn);
       piebtn.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -97,6 +104,7 @@ class ChartingToolStart {
         }
       });
       barbtn.setPreferredSize(new Dimension(100, 100));
+      barbtn.setToolTipText(BAR_CHART_TOOL_TIP);
       firstPanel.add(barbtn);
       barbtn.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -109,6 +117,7 @@ class ChartingToolStart {
       });
 
       scatterbtn.setPreferredSize(new Dimension(100, 100));
+      scatterbtn.setToolTipText(LINEAR_REGRESSION_TOOL_TIP);
       firstPanel.add(scatterbtn);
       scatterbtn.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -121,6 +130,7 @@ class ChartingToolStart {
       });
 
       nonLinearBtn.setPreferredSize(new Dimension(100, 100));
+      nonLinearBtn.setToolTipText(POWER_REGRESSION_TOOL_TIP);
       firstPanel.add(nonLinearBtn);
       nonLinearBtn.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -133,6 +143,7 @@ class ChartingToolStart {
       });
 
       polyBtn.setPreferredSize(new Dimension(100, 100));
+      polyBtn.setToolTipText(POLYNOMIAL_REGRESSION_TOOL_TIP);
       firstPanel.add(polyBtn);
       polyBtn.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -145,6 +156,7 @@ class ChartingToolStart {
       });
 
       threeDBtn.setPreferredSize(new Dimension(100, 100));
+      threeDBtn.setToolTipText(THREE_DIM_TOOL_TIP);
       firstPanel.add(threeDBtn);
       threeDBtn.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
