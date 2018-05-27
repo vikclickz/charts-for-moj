@@ -147,7 +147,7 @@ public class ChartingTool extends JFrame {
     static Envelope env;
 
     public ChartingTool() {
-        super("Cricket Leagues of USA");
+        super("Map of USA");
         helpToolOn = false;
         this.setSize(700, 450);
         zptb.setMap(map);
