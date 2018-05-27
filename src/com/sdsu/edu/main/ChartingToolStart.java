@@ -24,6 +24,7 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /*
  * Charting Tool Facility: Thesis
@@ -63,14 +64,18 @@ class ChartingToolStart {
       // Browse for the DBF File
       // jFileChooser
       jfc = new JFileChooser();
-      //jfc.showOpenDialog(this);
-      jfc.setSelectedFile(new File("./src/data/USA/states.dbf"));
-      if (jfc.getSelectedFile() != null) {
-        File file = jfc.getSelectedFile();
-        DbfReadController dbfread = DbfReadController.getInstance();
-        numericList = dbfread.readnumericdbf(file);
-        charList = dbfread.readchardbf(file);
-      }
+      FileNameExtensionFilter filter = new FileNameExtensionFilter("*.dbf", "dbf");
+      jfc.setFileFilter(filter);
+      int openDialog = 0;
+      do {
+        openDialog = jfc.showOpenDialog(this);
+      } while (openDialog == JFileChooser.CANCEL_OPTION || null == jfc.getSelectedFile());
+
+      File file = jfc.getSelectedFile();
+      DbfReadController dbfread = DbfReadController.getInstance();
+      numericList = dbfread.readnumericdbf(file);
+      charList = dbfread.readchardbf(file);
+
       // Window Listeners
       addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent e) {
