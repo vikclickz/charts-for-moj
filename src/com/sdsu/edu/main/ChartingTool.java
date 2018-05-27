@@ -1,6 +1,8 @@
 package com.sdsu.edu.main;
 
 
+import static com.sdsu.edu.main.constant.GUILabelConstants.CHARTING_TOOL_TIP;
+
 import com.esri.mo2.cs.geom.Envelope;
 import com.esri.mo2.data.feat.Feature;
 import com.esri.mo2.data.feat.SelectionSet;
@@ -555,7 +557,7 @@ public class ChartingTool extends JFrame {
         mbar.add(layercontrol);
         mbar.add(help);
         chartjb.addActionListener(lis);
-        chartjb.setToolTipText("charting");
+        chartjb.setToolTipText(CHARTING_TOOL_TIP);
         prtjb.addActionListener(lis);
         prtjb.setToolTipText("print map");
         addlyrjb.addActionListener(lis);

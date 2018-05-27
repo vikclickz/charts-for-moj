@@ -1,5 +1,7 @@
 package com.sdsu.edu.main;
 
+import static com.sdsu.edu.main.constant.GUILabelConstants.CHARTING_LABEL;
+
 import com.sdsu.edu.main.controller.db.DbfReadController;
 import com.sdsu.edu.main.gui.BarPanelGUI;
 import com.sdsu.edu.main.gui.LinearRegressionGUI;
@@ -54,7 +56,7 @@ class ChartingToolStart {
     private List<JPanel> panelList = new ArrayList<>();
 
     public ChartTypeFrameGUI() {
-      setTitle("Charting");
+      setTitle(CHARTING_LABEL);
       setSize(800, 600); // default size is 0,0
       setLocation(50, 200); // default is 0,0 (top left corner)
       setLayout(new GridLayout(3, 2));
