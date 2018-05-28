@@ -37,7 +37,7 @@ public class PiePanelGUI extends JPanel {
       attributeList.addElement(attributeNames.get(i));
     }
     // set layout
-    setLayout(new GridLayout(2, 4));
+    setLayout(new GridLayout(1, 3));
     // set combobox for chartcolor type
     chartcolorjcb = new JComboBox<String>(chartColorTypes);
     chartcolorjcb.setAutoscrolls(getVerifyInputWhenFocusTarget());

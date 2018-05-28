@@ -36,6 +36,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /*
@@ -51,6 +52,9 @@ class ChartingToolStart {
     private static final long serialVersionUID = 1L;
     private JFileChooser jfc;
     JPanel firstPanel = new JPanel();
+    JPanel secondPanel = new JPanel();
+    JPanel borderPanel2 = new JPanel(false);
+
     JButton piebtn = new JButton("PIE", new ImageIcon("./src/data/piechartbtn.jpg"));
     JButton barbtn = new JButton("BAR", new ImageIcon("./src/data/barchartbtn.jpg"));
 
@@ -117,10 +121,11 @@ class ChartingToolStart {
       piebtn.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           clearPanelList();
+          addCompForTitledBorder(PIE_CHART_TOOL_TIP);
           piePanelGUI = new PiePanelGUI(numericList, charList);
           panelList.add(piePanelGUI);
-          add(piePanelGUI);
-          setVisible(true);
+          secondPanel.add(piePanelGUI);
+          secondPanel.setVisible(true);
         }
       });
       barbtn.setPreferredSize(new Dimension(100, 100));
@@ -129,10 +134,11 @@ class ChartingToolStart {
       barbtn.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           clearPanelList();
+          addCompForTitledBorder(BAR_CHART_TOOL_TIP);
           barPanelGUI = new BarPanelGUI(numericList, charList);
           panelList.add(barPanelGUI);
-          add(barPanelGUI);
-          setVisible(true);
+          secondPanel.add(barPanelGUI);
+          secondPanel.setVisible(true);
         }
       });
 
@@ -141,11 +147,12 @@ class ChartingToolStart {
       firstPanel.add(scatterbtn);
       scatterbtn.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-            clearPanelList();
-            linearRegressionGUI = new LinearRegressionGUI(numericList, charList);
-            panelList.add(linearRegressionGUI);
-            add(linearRegressionGUI);
-            setVisible(true);
+          clearPanelList();
+          addCompForTitledBorder(LINEAR_REGRESSION_TOOL_TIP);
+          linearRegressionGUI = new LinearRegressionGUI(numericList, charList);
+          panelList.add(linearRegressionGUI);
+          secondPanel.add(linearRegressionGUI);
+          secondPanel.setVisible(true);
         }
       });
 
@@ -155,10 +162,11 @@ class ChartingToolStart {
       nonLinearBtn.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           clearPanelList();
+          addCompForTitledBorder(POWER_REGRESSION_TOOL_TIP);
           powerRegressionGUI = new PowerRegressionGUI(numericList, charList);
           panelList.add(powerRegressionGUI);
-          add(powerRegressionGUI);
-          setVisible(true);
+          secondPanel.add(powerRegressionGUI);
+          secondPanel.setVisible(true);
         }
       });
 
@@ -168,10 +176,11 @@ class ChartingToolStart {
       polyBtn.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           clearPanelList();
+          addCompForTitledBorder(POLYNOMIAL_REGRESSION_TOOL_TIP);
           polynomialPanelGUI = new PolynomialPanelGUI(numericList, charList);
           panelList.add(polynomialPanelGUI);
-          add(polynomialPanelGUI);
-          setVisible(true);
+          secondPanel.add(polynomialPanelGUI);
+          secondPanel.setVisible(true);
         }
       });
 
@@ -181,10 +190,11 @@ class ChartingToolStart {
       threeDBtn.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           clearPanelList();
+          addCompForTitledBorder(THREE_DIM_TOOL_TIP);
           threeDimensionalPanelGUI = new ThreeDimensionalPanelGUI(numericList, charList);
           panelList.add(threeDimensionalPanelGUI);
-          add(threeDimensionalPanelGUI);
-          setVisible(true);
+          secondPanel.add(threeDimensionalPanelGUI);
+          secondPanel.setVisible(true);
         }
       });
       setVisible(true);
@@ -192,8 +202,32 @@ class ChartingToolStart {
 
     private void clearPanelList() {
       for (JPanel panel : panelList) {
-          remove(panel);
+          secondPanel.remove(panel);
+          secondPanel.setVisible(false);
+          panel.setVisible(false);
       }
+    }
+
+    private void addCompForTitledBorder(String title) {
+      Container contentPane = getContentPane();
+      Border blackline = BorderFactory.createLineBorder(Color.black);
+
+      borderPanel2.add(Box.createRigidArea(new Dimension(0, 10)));
+      borderPanel2.add(secondPanel);
+      borderPanel2.setVisible(true);
+
+      Border paneEdge2 = BorderFactory.createEmptyBorder(30, 10, 10, 12);
+      TitledBorder titled = BorderFactory.createTitledBorder(
+          blackline, title);
+      titled.setTitleJustification(TitledBorder.LEFT);
+      titled.setTitlePosition(TitledBorder.DEFAULT_POSITION);
+
+      borderPanel2.setBorder(paneEdge2);
+      borderPanel2.setLayout(new BoxLayout(borderPanel2,
+          BoxLayout.X_AXIS));
+
+      secondPanel.setBorder(titled);
+      contentPane.add(borderPanel2);
     }
 
   }

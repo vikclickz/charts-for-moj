@@ -36,7 +36,7 @@ public class PowerRegressionGUI extends JPanel {
       attributeList.addElement(attributeNames.get(i));
     }
     // set layout
-    setLayout(new GridLayout(2, 5));
+    setLayout(new GridLayout(1, 5));
     charNamejcb = new JComboBox<String>(characterNameTypes);
     charNamejcb.setAutoscrolls(getVerifyInputWhenFocusTarget());
     add(charNamejcb);

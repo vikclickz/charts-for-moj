@@ -38,7 +38,7 @@ public class PolynomialPanelGUI extends JPanel {
       attributeList.addElement(attributeNames.get(i));
     }
     // set layout
-    setLayout(new GridLayout(3, 5));
+    setLayout(new GridLayout(1, 5));
 
     // set combobox for char Name type
     charNamejcb = new JComboBox<String>(characterNameTypes);
