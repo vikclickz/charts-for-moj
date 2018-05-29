@@ -77,8 +77,8 @@ class ChartingToolStart {
       setSize(800, 600); // default size is 0,0
       setLocation(50, 200); // default is 0,0 (top left corner)
       setLayout(new GridLayout(3, 2));
-      // Browse for the DBF File
-      // jFileChooser
+
+      // Browse for the DBF File using jFileChooser
       jfc = new JFileChooser();
       FileNameExtensionFilter filter = new FileNameExtensionFilter("*.dbf", "dbf");
       jfc.setFileFilter(filter);
@@ -88,6 +88,7 @@ class ChartingToolStart {
       } while (openDialog == JFileChooser.CANCEL_OPTION || null == jfc.getSelectedFile());
 
       File file = jfc.getSelectedFile();
+
       DbfReadController dbfread = DbfReadController.getInstance();
       numericList = dbfread.readnumericdbf(file);
       charList = dbfread.readchardbf(file);
