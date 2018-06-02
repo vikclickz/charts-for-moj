@@ -2,7 +2,10 @@ package com.sdsu.edu.main.controller;
 
 import com.sdsu.edu.main.controller.db.DbfReadController;
 import com.sdsu.edu.main.model.ChartModel;
+import com.sdsu.edu.main.view.BarChartViewController;
 import com.sdsu.edu.main.view.ChartViewController;
+import com.sdsu.edu.main.view.GenericChartViewController;
+import com.sdsu.edu.main.view.PieChartViewController;
 import java.awt.Color;
 import java.util.List;
 import org.jfree.chart.ChartFactory;
@@ -34,7 +37,7 @@ public class MapObjectChartController {
   public static final String POWER_REGRESSION_CHART = "Power Regression Chart";
   public static final String LINEAR_REGRESSION_CHART = "Linear Regression Chart";
   private static MapObjectChartController mapObjectChartController = new MapObjectChartController();
-  private ChartViewController chartViewController = new ChartViewController();
+  private ChartViewController chartViewController = new GenericChartViewController();
 
   public static MapObjectChartController getInstance() {
     return mapObjectChartController;
@@ -129,7 +132,7 @@ public class MapObjectChartController {
     plot.setDirection(Rotation.ANTICLOCKWISE);
 
     ChartPanel panel = new ChartPanel(chart);
-    ChartViewController chartViewController = new ChartViewController();
+    ChartViewController chartViewController = new PieChartViewController();
     chartViewController.displayChart(panel, title);
   }
 
@@ -157,7 +160,7 @@ public class MapObjectChartController {
     chart.getCategoryPlot().getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.UP_90);
 
     ChartPanel panel = new ChartPanel(chart);
-    ChartViewController chartViewController = new ChartViewController();
+    ChartViewController chartViewController = new BarChartViewController();
     chartViewController.displayChart(panel, title);
   }
 
