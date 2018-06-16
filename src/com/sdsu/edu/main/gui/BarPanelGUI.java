@@ -1,6 +1,6 @@
 package com.sdsu.edu.main.gui;
 
-import com.sdsu.edu.main.DbfReadController;
+import com.sdsu.edu.main.controller.db.DbfReadController;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -40,7 +40,7 @@ public class BarPanelGUI extends JPanel {
       attributeList.addElement(attributeNames.get(i));
     }
     // set layout
-    setLayout(new GridLayout(2, 4));
+    setLayout(new GridLayout(1, 4));
     // set combobox for chart type
     chartjcb = new JComboBox<String>(barchartTypes);
     chartjcb.setAutoscrolls(getVerifyInputWhenFocusTarget());

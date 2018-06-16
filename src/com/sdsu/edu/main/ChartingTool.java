@@ -1,56 +1,54 @@
 package com.sdsu.edu.main;
 
 
-import com.esri.mo2.ui.bean.*;
-import com.esri.mo2.ui.tb.ZoomPanToolBar;
-import com.esri.mo2.ui.tb.SelectionToolBar;
-import com.esri.mo2.ui.ren.LayerProperties;
-import com.esri.mo2.ui.dlg.AboutBox;
-import com.esri.mo2.cs.geom.*;
-import com.esri.mo2.data.feat.*;
-import com.esri.mo2.file.shp.*;
-import com.esri.mo2.map.dpy.BaseFeatureLayer;
+import static com.sdsu.edu.main.constant.GUILabelConstants.CHARTING_TOOL_TIP;
+
+import com.esri.mo2.cs.geom.Envelope;
+import com.esri.mo2.data.feat.Feature;
+import com.esri.mo2.data.feat.SelectionSet;
 import com.esri.mo2.map.dpy.FeatureLayer;
 import com.esri.mo2.map.dpy.Layerset;
 import com.esri.mo2.map.draw.AoLineStyle;
-import com.esri.mo2.map.draw.BaseSimpleRenderer;
-import com.esri.mo2.map.draw.SimpleMarkerSymbol;
-import com.esri.mo2.map.draw.TrueTypeMarkerSymbol;
-
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.*;
-import java.awt.Shape;
-import java.io.*;
-import java.math.*;
-import java.sql.Array;
+import com.esri.mo2.ui.bean.AcetateLayer;
+import com.esri.mo2.ui.bean.Identify;
+import com.esri.mo2.ui.bean.Layer;
+import com.esri.mo2.ui.bean.Legend;
+import com.esri.mo2.ui.bean.Map;
+import com.esri.mo2.ui.bean.PickEvent;
+import com.esri.mo2.ui.bean.PickListener;
+import com.esri.mo2.ui.bean.Toc;
+import com.esri.mo2.ui.bean.TocAdapter;
+import com.esri.mo2.ui.bean.TocEvent;
+import com.esri.mo2.ui.dlg.AboutBox;
+import com.esri.mo2.ui.ren.LayerProperties;
+import com.esri.mo2.ui.tb.SelectionToolBar;
+import com.esri.mo2.ui.tb.ZoomPanToolBar;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.text.DecimalFormat;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
-import java.util.StringTokenizer;
-import java.util.Vector;
-
-import java.awt.geom.*;
-import java.awt.image.BufferedImage;
-import java.awt.print.PageFormat;
-import java.awt.print.Printable;
-import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
-
-import javax.imageio.ImageIO;
-
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.PrintRequestAttributeSet;
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableColumn;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
 
 public class ChartingTool extends JFrame {
     static Map map = new Map();
@@ -151,7 +149,7 @@ public class ChartingTool extends JFrame {
     static Envelope env;
 
     public ChartingTool() {
-        super("Cricket Leagues of USA");
+        super("Map of USA");
         helpToolOn = false;
         this.setSize(700, 450);
         zptb.setMap(map);
@@ -559,7 +557,7 @@ public class ChartingTool extends JFrame {
         mbar.add(layercontrol);
         mbar.add(help);
         chartjb.addActionListener(lis);
-        chartjb.setToolTipText("charting");
+        chartjb.setToolTipText(CHARTING_TOOL_TIP);
         prtjb.addActionListener(lis);
         prtjb.setToolTipText("print map");
         addlyrjb.addActionListener(lis);
@@ -672,7 +670,7 @@ public class ChartingTool extends JFrame {
         helpText.add(s8);
         String s9 = "You must click on arrow button,\n"
                 + "     Arrow tool, and when we click on it, our code will make it \n"
-                + "     the “current” or “selected” tool.   That disenfranchises the \n"
+                + "     the ï¿½currentï¿½ or ï¿½selectedï¿½ tool.   That disenfranchises the \n"
                 + "     previous tool, and toolwise, we go back into a neutral gear, \n"
                 + "since the Arrow tool has no behavior attached to it.";
         helpText.add(s9);

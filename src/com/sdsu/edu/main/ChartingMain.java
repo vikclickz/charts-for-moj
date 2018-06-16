@@ -1,5 +1,7 @@
 package com.sdsu.edu.main;
 
+import static com.sdsu.edu.main.constant.GUILabelConstants.CHARTING_TOOL_TIP;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Image;
@@ -562,7 +564,7 @@ public class ChartingMain extends JFrame {
         mbar.add(layercontrol);
         mbar.add(help);
         chartjb.addActionListener(lis);
-        chartjb.setToolTipText("charting");
+        chartjb.setToolTipText(CHARTING_TOOL_TIP);
         prtjb.addActionListener(lis);
         prtjb.setToolTipText("print map");
         addlyrjb.addActionListener(lis);
@@ -675,7 +677,7 @@ public class ChartingMain extends JFrame {
         helpText.add(s8);
         String s9 = "You must click on arrow button,\n"
                 + "     Arrow tool, and when we click on it, our code will make it \n"
-                + "     the “current” or “selected” tool.   That disenfranchises the \n"
+                + "     the ï¿½currentï¿½ or ï¿½selectedï¿½ tool.   That disenfranchises the \n"
                 + "     previous tool, and toolwise, we go back into a neutral gear, \n"
                 + "since the Arrow tool has no behavior attached to it.";
         helpText.add(s9);

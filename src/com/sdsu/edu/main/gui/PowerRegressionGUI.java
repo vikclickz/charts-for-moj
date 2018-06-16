@@ -1,6 +1,8 @@
 package com.sdsu.edu.main.gui;
 
-import com.sdsu.edu.main.DbfReadController;
+import com.sdsu.edu.main.controller.MapObjectChartController;
+import com.sdsu.edu.main.controller.db.DbfReadController;
+import com.sdsu.edu.main.constant.GUILabelConstants;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,19 +18,13 @@ import javax.swing.ListSelectionModel;
 
 public class PowerRegressionGUI extends JPanel {
 
-  private String[] barchartTypes = {"Horizontal", "Vertical"};
-  private String[] chartColorTypes = {"Normal", "Pastel", "Rainbow"};
   private String[] characterNameTypes;
   private List<String> attributeNames;
   final DefaultListModel<String> attributeList;
   final JList<String> attributeSelectList;
   public List<String> selectedFields;
-  private JComboBox<String> chartjcb;
-  private JComboBox<String> chartcolorjcb;
   private JComboBox<String> charNamejcb;
   private JButton selectbtn;
-  String barchartSType;
-  String chartColorSType;
   String characterNameSType;
 
   public PowerRegressionGUI(List<String> numericNameList, List<String> charNameList) {
@@ -40,7 +36,7 @@ public class PowerRegressionGUI extends JPanel {
       attributeList.addElement(attributeNames.get(i));
     }
     // set layout
-    setLayout(new GridLayout(2, 5));
+    setLayout(new GridLayout(1, 5));
     charNamejcb = new JComboBox<String>(characterNameTypes);
     charNamejcb.setAutoscrolls(getVerifyInputWhenFocusTarget());
     add(charNamejcb);
@@ -63,7 +59,7 @@ public class PowerRegressionGUI extends JPanel {
     scrollPane.setViewportView(attributeSelectList);
     add(scrollPane);
     // add a button to show the list of attributes selected
-    selectbtn = new JButton("Select Done");
+    selectbtn = new JButton(GUILabelConstants.SUBMIT_BTN_LBL);
     add(selectbtn);
     selectbtn.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -79,9 +75,8 @@ public class PowerRegressionGUI extends JPanel {
           if (characterNameSType == null) {
             characterNameSType = (String) charNamejcb.getSelectedItem();
           }
-          DbfReadController dbfread = DbfReadController.getInstance();
-          dbfread.dataHandlerPower(selectedFields, characterNameSType,
-              chartColorSType);
+          MapObjectChartController mapObjectChartController = MapObjectChartController.getInstance();
+          mapObjectChartController.createPowerRegressionChart(selectedFields, characterNameSType);
         }
       }
     });

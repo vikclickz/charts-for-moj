@@ -1,6 +1,8 @@
-package com.sdsu.edu.main;
+package com.sdsu.edu.main.controller.db;
 
-import java.awt.*;
+import com.sdsu.edu.main.view.ChartViewController;
+import com.sdsu.edu.main.controller.ChartController;
+import java.awt.Color;
 import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.DataOutput;
@@ -19,39 +21,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.Vector;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
-import com.sdsu.edu.main.DbfReadController.CharacterRecord;
-import com.sdsu.edu.main.DbfReadController.DBFException;
-import com.sdsu.edu.main.DbfReadController.DBFField;
-import com.sdsu.edu.main.DbfReadController.DBFHeader;
-import com.sdsu.edu.main.DbfReadController.DBFReader;
-import com.sdsu.edu.main.DbfReadController.DbfUtils;
-import com.sdsu.edu.main.DbfReadController.NumericRecord;
-import javax.swing.JTabbedPane;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.SymbolAxis;
 import org.jfree.chart.axis.ValueAxis;
-import org.jfree.chart.plot.FastScatterPlot;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.category.ScatterRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
-import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.function.Function2D;
 import org.jfree.data.function.LineFunction2D;
 import org.jfree.data.function.PolynomialFunction2D;
 import org.jfree.data.function.PowerFunction2D;
-import org.jfree.data.gantt.TaskSeries;
-import org.jfree.data.gantt.TaskSeriesCollection;
 import org.jfree.data.general.DatasetUtilities;
 import org.jfree.data.statistics.Regression;
-import org.jfree.data.xy.DefaultXYDataset;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -593,8 +578,6 @@ public class DbfReadController {
   NumericRecord numericRecord = new NumericRecord();
   HashMap<String, Integer> charMap = new HashMap<String, Integer>();
   CharacterRecord charRecord = new CharacterRecord();
-  String xAxisLabel = null;
-  String yAxisLabel = null;
   private static DbfReadController DbfRead = new DbfReadController();
 
   /* Static 'instance' method */
@@ -692,6 +675,14 @@ public class DbfReadController {
     return (List<String>) charNameList;
   }
 
+  public CharacterRecord getCharRecord() {
+    return charRecord;
+  }
+
+  public NumericRecord getNumericRecord() {
+    return numericRecord;
+  }
+
   public String dataHandler(List<String> selectedFields, String chartSType,
       String characterNameSType, String chartColorSType) {
     String[] stateName;
@@ -760,234 +751,4 @@ public class DbfReadController {
     }  // end for
     return null;
   } // end dataHandler
-
-  public String dataHandler(List<String> selectedFields,
-      String characterNameSType, String chartColorSType) {
-
-    String yAxisLabel = selectedFields.get(0);
-
-    List<String> stateList = charRecord.fieldAndValues.get(characterNameSType);
-    List<Double> stateValues = numericRecord.fieldAndValues.get(yAxisLabel);
-
-    String[] stockArr = new String[stateList.size()];
-    stockArr = stateList.toArray(stockArr);
-
-    ValueAxis xAxis = new SymbolAxis(characterNameSType, stockArr);
-    xAxis.setVerticalTickLabels(true);
-
-    XYSeriesCollection dataset = new XYSeriesCollection();
-    XYSeries series1 = new XYSeries("Linear Regression Chart");
-
-    for (int i=1; i<=51; i++) {
-      series1.add(i, stateValues.get(i-1));
-    }
-
-    dataset.addSeries(series1);
-
-    String title = characterNameSType + " vs " + yAxisLabel;
-
-    JFreeChart chart = ChartFactory.createScatterPlot(
-        title,
-        characterNameSType, yAxisLabel, dataset);
-
-    XYPlot plot = (XYPlot) chart.getPlot();
-    plot.setBackgroundPaint(Color.WHITE);
-    plot.setDomainAxis(xAxis);
-    ChartPanel panel = new ChartPanel(chart);
-    ChartViewController chartViewController = new ChartViewController(panel, title);
-    //chartViewController.display(panel);
-
-    this.drawRegressionLine(dataset, chart);
-
-    return null;
-  }
-
-  public String dataHandlerPower(List<String> selectedFields,
-      String characterNameSType, String chartColorSType) {
-
-    String yAxisLabel = selectedFields.get(0);
-
-    List<String> stateList = charRecord.fieldAndValues.get(characterNameSType);
-    List<Double> stateValues = numericRecord.fieldAndValues.get(yAxisLabel);
-
-    String[] stockArr = new String[stateList.size()];
-    stockArr = stateList.toArray(stockArr);
-
-    ValueAxis xAxis = new SymbolAxis(characterNameSType, stockArr);
-    xAxis.setVerticalTickLabels(true);
-
-    XYSeries series1 = new XYSeries("Power Regression Chart");
-
-    for (int i=2; i<=52; i++) {
-      series1.add(i, stateValues.get(i-2));
-    }
-    XYDataset dataset = new XYSeriesCollection(series1);
-
-    String title = characterNameSType + " vs " + yAxisLabel;
-
-    JFreeChart chart = ChartFactory.createScatterPlot(
-        title,
-        characterNameSType, yAxisLabel, dataset);
-
-    XYPlot plot = (XYPlot) chart.getPlot();
-    plot.setBackgroundPaint(Color.WHITE);
-
-    plot.setDomainAxis(xAxis);
-    ChartPanel panel = new ChartPanel(chart);
-    ChartViewController chartViewController = new ChartViewController(panel, title);
-    //chartViewController.display(panel);
-
-    this.drawNonLinearRegressionLine(dataset, chart);
-
-    return null;
-  }
-
-  public String dataHandlerPoly(List<String> selectedFields,
-      String characterNameSType, String chartColorSType) {
-
-    String yAxisLabel = selectedFields.get(0);
-
-    List<String> stateList = charRecord.fieldAndValues.get(characterNameSType);
-    List<Double> stateValues = numericRecord.fieldAndValues.get(yAxisLabel);
-
-    String[] stockArr = new String[stateList.size()];
-    stockArr = stateList.toArray(stockArr);
-
-    ValueAxis xAxis = new SymbolAxis(characterNameSType, stockArr);
-    xAxis.setVerticalTickLabels(true);
-
-    XYSeries series1 = new XYSeries("Polynomial Regression Chart");
-
-    for (int i=2; i<=52; i++) {
-      series1.add(i, stateValues.get(i-2));
-    }
-    XYDataset dataset = new XYSeriesCollection(series1);
-
-
-    String title = characterNameSType + " vs " + yAxisLabel;
-
-    JFreeChart chart = ChartFactory.createScatterPlot(title,
-        characterNameSType, yAxisLabel, dataset);
-
-    XYPlot plot = (XYPlot) chart.getPlot();
-    plot.setBackgroundPaint(Color.WHITE);
-
-    plot.setDomainAxis(xAxis);
-    ChartPanel panel = new ChartPanel(chart);
-    ChartViewController chartViewController = new ChartViewController(panel, title);
-    //chartViewController.display(panel);
-
-    this.drawPolyRegressionLine(dataset, chart);
-
-    return null;
-  }
-
-  private void drawPolyRegressionLine(XYDataset inputData, JFreeChart chart) {
-    // Get the parameters 'a' and 'b' for an equation y = a + b * x,
-    // fitted to the inputData using ordinary least squares regression.
-    // a - regressionParameters[0], b - regressionParameters[1]
-    double regressionParameters[] = Regression.getPolynomialRegression(inputData,
-        0, 2);
-
-    double myArr[] = new double[regressionParameters.length - 1];
-
-    for (int i=0; i < regressionParameters.length-1; i++) {
-      myArr[i] = regressionParameters[i];
-    }
-
-    // Prepare a line function using the found parameters
-    Function2D curve = new PolynomialFunction2D(myArr);
-
-    XYDataset dataset = DatasetUtilities.sampleFunction2D(curve,
-        0.0, 50.0, 100, "Poly Regression Line");
-
-    XYLineAndShapeRenderer renderer2 = new XYLineAndShapeRenderer(true,
-        false);
-    // Draw the line dataset
-    XYPlot xyplot = chart.getXYPlot();
-    xyplot.setDataset(1, dataset);
-    renderer2.setSeriesPaint(0, Color.BLACK);
-    xyplot.setRenderer(1, renderer2);
-
-  }
-
-  private void drawNonLinearRegressionLine(XYDataset inputData, JFreeChart chart) {
-    // Get the parameters 'a' and 'b' for an equation y = a + b * x,
-    // fitted to the inputData using ordinary least squares regression.
-    // a - regressionParameters[0], b - regressionParameters[1]
-    double regressionParameters[] = Regression.getPowerRegression(inputData,
-        0);
-
-    // Prepare a line function using the found parameters
-    Function2D curve = new PowerFunction2D(regressionParameters[0],
-        regressionParameters[1]);
-
-    XYDataset dataset = DatasetUtilities.sampleFunction2D(curve,
-        0.0, 50.0, 100, "Power Regression Line");
-
-    XYLineAndShapeRenderer renderer2 = new XYLineAndShapeRenderer(true,
-        false);
-    // Draw the line dataset
-    XYPlot xyplot = chart.getXYPlot();
-    xyplot.setDataset(1, dataset);
-    renderer2.setSeriesPaint(0, Color.BLACK);
-    xyplot.setRenderer(1, renderer2);
-
-  }
-
-  private Color getColorByName(String colorName) {
-    Random random = new Random();
-    if (colorName.equalsIgnoreCase("Normal")) {
-      return Color.RED;
-    } else if (colorName.equalsIgnoreCase("Pastel")) {
-      final float hue = random.nextFloat();
-      // Saturation between 0.1 and 0.3
-      final float saturation = (random.nextInt(2000) + 1000) / 10000f;
-      final float luminance = 0.9f;
-      return Color.getHSBColor(hue, saturation, luminance);
-    } else {
-      final float hue = random.nextFloat();
-      final float saturation = 0.9f;// 1.0 for brilliant, 0.0 for dull
-      final float luminance = 1.0f; // 1.0 for brighter, 0.0 for black
-      return Color.getHSBColor(hue, saturation, luminance);
-    }
-  }
-
-  private void drawRegressionLine(XYDataset inputData, JFreeChart chart) {
-    // Get the parameters 'a' and 'b' for an equation y = a + b * x,
-    // fitted to the inputData using ordinary least squares regression.
-    // a - regressionParameters[0], b - regressionParameters[1]
-    double regressionParameters[] = Regression.getOLSRegression(inputData,
-        0);
-
-    // Prepare a line function using the found parameters
-    LineFunction2D linefunction2d = new LineFunction2D(
-        regressionParameters[0], regressionParameters[1]);
-
-    // Creates a dataset by taking sample values from the line function
-    XYDataset dataset = DatasetUtilities.sampleFunction2D(linefunction2d,
-        0D, 300, 100, "Linear Regression Line");
-
-    // Draw the line dataset
-    XYPlot xyplot = chart.getXYPlot();
-    xyplot.setDataset(1, dataset);
-    XYLineAndShapeRenderer xylineandshaperenderer = new XYLineAndShapeRenderer(
-        true, false);
-    xylineandshaperenderer.setSeriesPaint(0, Color.BLACK);
-    xyplot.setRenderer(1, xylineandshaperenderer);
-  }
-
-  private void drawInputPoint(double x, double y, JFreeChart chart) {
-    // Create a new dataset with only one row
-    XYSeriesCollection dataset = new XYSeriesCollection();
-    String title = "Input area: " + x + ", Price: " + y;
-    XYSeries series = new XYSeries(title);
-    series.add(x, y);
-    dataset.addSeries(series);
-
-    XYPlot plot = (XYPlot) chart.getPlot();
-    plot.setDataset(2, dataset);
-    XYItemRenderer renderer = new XYLineAndShapeRenderer(false, true);
-    plot.setRenderer(2, renderer);
-  }
 }

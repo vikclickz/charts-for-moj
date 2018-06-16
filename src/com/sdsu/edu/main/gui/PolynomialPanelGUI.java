@@ -1,6 +1,8 @@
 package com.sdsu.edu.main.gui;
 
-import com.sdsu.edu.main.DbfReadController;
+import com.sdsu.edu.main.controller.MapObjectChartController;
+import com.sdsu.edu.main.controller.db.DbfReadController;
+import com.sdsu.edu.main.constant.GUILabelConstants;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,20 +17,17 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 
 public class PolynomialPanelGUI extends JPanel {
-  private String[] barchartTypes = {"Horizontal", "Vertical"};
-  private String[] chartColorTypes = {"Normal", "Pastel", "Rainbow"};
   private String[] characterNameTypes;
   private List<String> attributeNames;
   final DefaultListModel<String> attributeList;
   final JList<String> attributeSelectList;
   public List<String> selectedFields;
-  private JComboBox<String> chartjcb;
-  private JComboBox<String> chartcolorjcb;
   private JComboBox<String> charNamejcb;
+  private JComboBox<Integer> chartOrderJcb;
   private JButton selectbtn;
-  String barchartSType;
-  String chartColorSType;
   String characterNameSType;
+  Integer nonLinearRegressionOrder = 2;
+  private Integer[] regressionOrder = {2,3};
 
   public PolynomialPanelGUI(List<String> numericNameList, List<String> charNameList) {
     characterNameTypes = charNameList.toArray(new String[charNameList.size()]);
@@ -39,7 +38,7 @@ public class PolynomialPanelGUI extends JPanel {
       attributeList.addElement(attributeNames.get(i));
     }
     // set layout
-    setLayout(new GridLayout(2, 5));
+    setLayout(new GridLayout(1, 5));
 
     // set combobox for char Name type
     charNamejcb = new JComboBox<String>(characterNameTypes);
@@ -63,8 +62,21 @@ public class PolynomialPanelGUI extends JPanel {
     attributeSelectList.setAutoscrolls(getVerifyInputWhenFocusTarget());
     scrollPane.setViewportView(attributeSelectList);
     add(scrollPane);
+
+    chartOrderJcb = new JComboBox<Integer>(regressionOrder);
+    chartOrderJcb.setAutoscrolls(getVerifyInputWhenFocusTarget());
+    add(chartOrderJcb);
+
+    // things to do upon selecting the type of chart that is needed
+    chartOrderJcb.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        JComboBox<String> characterNameType = (JComboBox<String>) e.getSource();
+        nonLinearRegressionOrder = (Integer) characterNameType.getSelectedItem();
+      }
+    });
+
     // add a button to show the list of attributes selected
-    selectbtn = new JButton("Select Done");
+    selectbtn = new JButton(GUILabelConstants.SUBMIT_BTN_LBL);
     add(selectbtn);
     selectbtn.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -80,9 +92,9 @@ public class PolynomialPanelGUI extends JPanel {
           if(characterNameSType == null) {
             characterNameSType = (String) charNamejcb.getSelectedItem();
           }
-          DbfReadController dbfread = DbfReadController.getInstance();
-          dbfread.dataHandlerPoly(selectedFields, characterNameSType,
-              chartColorSType);
+          MapObjectChartController mapObjectChartController = MapObjectChartController.getInstance();
+          mapObjectChartController.createPolynomialRegressionChart(selectedFields,
+              characterNameSType, nonLinearRegressionOrder);
         }
       }
     });

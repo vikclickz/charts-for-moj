@@ -1,6 +1,8 @@
 package com.sdsu.edu.main.gui;
 
-import com.sdsu.edu.main.controller.db.DbfReadController;
+import com.sdsu.edu.main.constant.ChartType;
+import com.sdsu.edu.main.constant.GUILabelConstants;
+import com.sdsu.edu.main.controller.MapObjectChartController;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,21 +16,21 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 
-public class PiePanelGUI extends JPanel {
-  private String[] chartColorTypes = {"Pastel", "Normal", "Rainbow"};
+public class ThreeDimensionalPanelGUI extends JPanel {
+
   private String[] characterNameTypes;
   private List<String> attributeNames;
   final DefaultListModel<String> attributeList;
   final JList<String> attributeSelectList;
   public List<String> selectedFields;
-  private JComboBox<String> chartcolorjcb;
   private JComboBox<String> charNamejcb;
+  private JComboBox<String> chartTypeComboBox;
   private JButton selectbtn;
-  String chartSType = "Pie";
-  String chartColorSType;
   String characterNameSType;
+  String chartTypeName = ChartType.BAR.getChartName();
+  private String[] chartType = {"Bar Chart", "Pie Chart"};
 
-  public PiePanelGUI(List<String> numericNameList, List<String> charNameList) {
+  public ThreeDimensionalPanelGUI(List<String> numericNameList, List<String> charNameList) {
     characterNameTypes = charNameList.toArray(new String[charNameList.size()]);
     attributeNames = numericNameList;
     setSize(500, 500);
@@ -37,22 +39,12 @@ public class PiePanelGUI extends JPanel {
       attributeList.addElement(attributeNames.get(i));
     }
     // set layout
-    setLayout(new GridLayout(1, 3));
-    // set combobox for chartcolor type
-    chartcolorjcb = new JComboBox<String>(chartColorTypes);
-    chartcolorjcb.setAutoscrolls(getVerifyInputWhenFocusTarget());
-    add(chartcolorjcb);
+    setLayout(new GridLayout(1, 5));
+
     // set combobox for char Name type
     charNamejcb = new JComboBox<String>(characterNameTypes);
     charNamejcb.setAutoscrolls(getVerifyInputWhenFocusTarget());
     add(charNamejcb);
-    // things to do upon selecting the type of chartcolor that is needed
-    chartcolorjcb.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        JComboBox<String> chartColorType = (JComboBox<String>) e.getSource();
-        chartColorSType = (String) chartColorType.getSelectedItem();
-      }
-    });
 
     // things to do upon selecting the type of chart that is needed
     charNamejcb.addActionListener(new ActionListener() {
@@ -71,8 +63,21 @@ public class PiePanelGUI extends JPanel {
     attributeSelectList.setAutoscrolls(getVerifyInputWhenFocusTarget());
     scrollPane.setViewportView(attributeSelectList);
     add(scrollPane);
+
+    chartTypeComboBox = new JComboBox<String>(chartType);
+    chartTypeComboBox.setAutoscrolls(getVerifyInputWhenFocusTarget());
+    add(chartTypeComboBox);
+
+    // things to do upon selecting the type of chart that is needed
+    chartTypeComboBox.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        JComboBox<String> characterNameType = (JComboBox<String>) e.getSource();
+        chartTypeName = (String) characterNameType.getSelectedItem();
+      }
+    });
+
     // add a button to show the list of attributes selected
-    selectbtn = new JButton("Select Done");
+    selectbtn = new JButton(GUILabelConstants.SUBMIT_BTN_LBL);
     add(selectbtn);
     selectbtn.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -84,10 +89,18 @@ public class PiePanelGUI extends JPanel {
             data += obj + ", ";
             selectedFields.add((String) obj);
           }
-          DbfReadController dbfread = DbfReadController.getInstance();
-          dbfread.dataHandler(selectedFields, chartSType, characterNameSType, chartColorSType);
+          if (characterNameSType == null) {
+            characterNameSType = (String) charNamejcb.getSelectedItem();
+          }
+          if (chartTypeName.contains(ChartType.BAR.getChartName())) {
+            MapObjectChartController mapObjectChartController = new MapObjectChartController();
+            mapObjectChartController.create3dBarChart(selectedFields, characterNameSType);
+          } else {
+            MapObjectChartController mapObjectChartController = new MapObjectChartController();
+            mapObjectChartController.create3dPieChart(selectedFields, characterNameSType);
+          }
         }
       }
     });
-  } // MyPiePanel Constructor
+  } // constructor
 }
