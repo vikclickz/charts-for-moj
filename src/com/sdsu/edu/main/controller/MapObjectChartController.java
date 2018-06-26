@@ -46,47 +46,101 @@ public class MapObjectChartController {
     return mapObjectChartController;
   }
 
-  public void createPolynomialRegressionChart(List<String> selectedFields,
-      String xAxisLabel, Integer order) {
-    String yAxisLabel = selectedFields.get(0);
+  public void createPolynomialRegressionChart(List<String> xAxisSelectedList,
+      List<String> yAxisSelectedList, Integer order) {
+//    String yAxisLabel = selectedFields.get(0);
+//
+//    ChartModel chartModel = buildChartModel(selectedFields, xAxisLabel,
+//        POLYNOMIAL_REGRESSION_CHART, yAxisLabel);
+//
+//    String title = xAxisLabel + " vs " + yAxisLabel;
+//
+//    JFreeChart chart = ChartFactory.createScatterPlot(title,
+//        xAxisLabel, yAxisLabel, chartModel.getXyDataset());
+//
+//    XYPlot plot = (XYPlot) chart.getPlot();
+//    plot.setBackgroundPaint(Color.WHITE);
+//    plot.setDomainAxis(chartModel.getDomainAxis());
+//    ChartPanel panel = new ChartPanel(chart);
+//    chartViewController.displayChart(panel, title);
 
-    ChartModel chartModel = buildChartModel(selectedFields, xAxisLabel,
-        POLYNOMIAL_REGRESSION_CHART, yAxisLabel);
+    String independentVar = yAxisSelectedList.get(0);
+    String dependentVar = xAxisSelectedList.get(0);
 
-    String title = xAxisLabel + " vs " + yAxisLabel;
+    ChartModel chartModel = buildChartMode2l(independentVar, dependentVar,
+        POLYNOMIAL_REGRESSION_CHART);
 
-    JFreeChart chart = ChartFactory.createScatterPlot(title,
-        xAxisLabel, yAxisLabel, chartModel.getXyDataset());
+    String title = dependentVar + " vs " + independentVar;
+
+    JFreeChart chart = ChartFactory.createScatterPlot(
+        title,
+        dependentVar, independentVar, chartModel.getXyDataset());
 
     XYPlot plot = (XYPlot) chart.getPlot();
-    plot.setBackgroundPaint(Color.WHITE);
-    plot.setDomainAxis(chartModel.getDomainAxis());
+    plot.setBackgroundPaint(Color.LIGHT_GRAY);
+
+    List<Double> collect = chartModel.getDependentList().stream().sorted()
+        .collect(Collectors.toList());
+
+    List<Double> collect1 = chartModel.getIndependentList().stream().sorted()
+        .collect(Collectors.toList());
+
+    ValueAxis domainAxis = plot.getDomainAxis();
+    domainAxis.setRange(0, collect.get(collect.size() - 1));
+    domainAxis.setStandardTickUnits(new NumberTickUnitSource());
+    plot.setDomainAxis(domainAxis);
+
+    ValueAxis rangeAxis = plot.getRangeAxis();
+    rangeAxis.setRange(0, collect1.get(collect1.size() - 1));
+    rangeAxis.setStandardTickUnits(new NumberTickUnitSource());
+    plot.setRangeAxis(rangeAxis);
+
     ChartPanel panel = new ChartPanel(chart);
     chartViewController.displayChart(panel, title);
-
     drawPolyRegressionLine(chartModel.getXyDataset(), chart, order);
   }
 
-  public void createPowerRegressionChart(List<String> selectedFields,
-      String xAxisLabel) {
+  public void createPowerRegressionChart(List<String> xAxisSelectedList,
+      List<String> yAxisSelectedList) {
 
-    String yAxisLabel = selectedFields.get(0);
+    String independentVar = yAxisSelectedList.get(0);
+    String dependentVar = xAxisSelectedList.get(0);
 
-    ChartModel chartModel = buildChartModel(selectedFields, xAxisLabel,
-        POWER_REGRESSION_CHART, yAxisLabel);
+    ChartModel chartModel = buildChartMode2l(independentVar, dependentVar,
+        POWER_REGRESSION_CHART);
 
-    String title = xAxisLabel + " vs " + yAxisLabel;
+    String title = dependentVar + " vs " + independentVar;
 
     JFreeChart chart = ChartFactory.createScatterPlot(
-        title, xAxisLabel, yAxisLabel, chartModel.getXyDataset());
+        title,
+        dependentVar, independentVar, chartModel.getXyDataset());
 
     XYPlot plot = (XYPlot) chart.getPlot();
-    plot.setBackgroundPaint(Color.WHITE);
-    plot.setDomainAxis(chartModel.getDomainAxis());
+    plot.setBackgroundPaint(Color.LIGHT_GRAY);
+
+    List<Double> collect = chartModel.getDependentList().stream().sorted()
+        .collect(Collectors.toList());
+
+    List<Double> collect1 = chartModel.getIndependentList().stream().sorted()
+        .collect(Collectors.toList());
+
+    Double domainAxisMax = collect.get(collect.size() - 1);
+    Double rangeAxisMax = collect1.get(collect1.size() - 1);
+
+    ValueAxis domainAxis = plot.getDomainAxis();
+    domainAxis.setRange(0, domainAxisMax);
+    domainAxis.setStandardTickUnits(new NumberTickUnitSource());
+    plot.setDomainAxis(domainAxis);
+
+    ValueAxis rangeAxis = plot.getRangeAxis();
+    rangeAxis.setRange(0, rangeAxisMax);
+    rangeAxis.setStandardTickUnits(new NumberTickUnitSource());
+    plot.setRangeAxis(rangeAxis);
+
     ChartPanel panel = new ChartPanel(chart);
     chartViewController.displayChart(panel, title);
 
-    drawPowerRegressionLine(chartModel.getXyDataset(), chart);
+    drawPowerRegressionLine(chartModel.getXyDataset(), chart, domainAxisMax);
   }
 
   public void createLinearRegressionChart(List<String> xAxisSelectedList, List<String> yAxisSelectedList) {
@@ -214,7 +268,8 @@ public class MapObjectChartController {
 
   }
 
-  private void drawPowerRegressionLine(XYDataset inputData, JFreeChart chart) {
+  private void drawPowerRegressionLine(XYDataset inputData, JFreeChart chart,
+      Double max) {
     // Get the parameters 'a' and 'b' for an equation y = a + b * x,
     // fitted to the inputData using ordinary least squares regression.
     // a - regressionParameters[0], b - regressionParameters[1]
@@ -226,7 +281,7 @@ public class MapObjectChartController {
         regressionParameters[1]);
 
     XYDataset dataset = DatasetUtilities.sampleFunction2D(curve,
-        0.0, 50.0, 100, "Power Regression Line");
+        0.0, max, 100, "Power Regression Line");
 
     XYLineAndShapeRenderer renderer2 = new XYLineAndShapeRenderer(true,
         false);
@@ -282,15 +337,15 @@ public class MapObjectChartController {
 
     XYSeries series1 = new XYSeries(chartTitle);
 
-//    if (chartTitle.contains("Linear")) {
+    if (chartTitle.contains("Linear")) {
       for (int i = 1; i <= independentListVal.size(); i++) {
         series1.add(dependentListVal.get(i-1), independentListVal.get(i-1));
       }
-//    } else {
-//      for (int i = 2; i <= 52; i++) {
-//        series1.add(i, stateValues.get(i - 2));
-//      }
-//    }
+    } else {
+      for (int i = 1; i <= independentListVal.size(); i++) {
+        series1.add(dependentListVal.get(i-1), independentListVal.get(i-1));
+      }
+    }
     //chartModel.setDomainAxis(xAxis);
 
     chartModel.setIndependentList(independentListVal);
