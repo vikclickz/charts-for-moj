@@ -86,18 +86,19 @@ public class MapObjectChartController {
         .collect(Collectors.toList());
 
     ValueAxis domainAxis = plot.getDomainAxis();
-    domainAxis.setRange(0, collect.get(collect.size() - 1));
+    domainAxis.setRange(0, plot.getDomainAxis().getRange().getCentralValue() * 2);
     domainAxis.setStandardTickUnits(new NumberTickUnitSource());
     plot.setDomainAxis(domainAxis);
 
     ValueAxis rangeAxis = plot.getRangeAxis();
-    rangeAxis.setRange(0, collect1.get(collect1.size() - 1));
+    rangeAxis.setRange(0, plot.getRangeAxis().getRange().getCentralValue() * 2);
     rangeAxis.setStandardTickUnits(new NumberTickUnitSource());
     plot.setRangeAxis(rangeAxis);
 
     ChartPanel panel = new ChartPanel(chart);
     chartViewController.displayChart(panel, title);
-    drawPolyRegressionLine(chartModel.getXyDataset(), chart, order);
+    drawPolyRegressionLine(chartModel.getXyDataset(), chart, order,
+        plot.getDomainAxis().getRange().getLowerBound(), plot.getDomainAxis().getRange().getUpperBound());
   }
 
   public void createPowerRegressionChart(List<String> xAxisSelectedList,
@@ -239,7 +240,8 @@ public class MapObjectChartController {
     chartViewController.displayChart(panel, title);
   }
 
-  private void drawPolyRegressionLine(XYDataset inputData, JFreeChart chart, Integer order) {
+  private void drawPolyRegressionLine(XYDataset inputData, JFreeChart chart, Integer order,
+      double lowerBound, double upperBound) {
     // Get the parameters 'a' and 'b' for an equation y = a + b * x,
     // fitted to the inputData using ordinary least squares regression.
     // a - regressionParameters[0], b - regressionParameters[1]
@@ -256,7 +258,7 @@ public class MapObjectChartController {
     Function2D curve = new PolynomialFunction2D(myArr);
 
     XYDataset dataset = DatasetUtilities.sampleFunction2D(curve,
-        0.0, 50.0, 100, "Poly Regression Line");
+        lowerBound, upperBound, 100, "Poly Regression Line");
 
     XYLineAndShapeRenderer renderer2 = new XYLineAndShapeRenderer(true,
         false);

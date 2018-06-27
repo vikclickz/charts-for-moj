@@ -26,10 +26,8 @@ public class PolynomialPanelGUI extends JPanel {
   public List<String> xAxisSelectedList;
   public List<String> yAxisSelectedList;
 
-  private JComboBox<String> charNamejcb;
   private JComboBox<Integer> chartOrderJcb;
   private JButton selectbtn;
-  String characterNameSType;
   Integer nonLinearRegressionOrder = 2;
   private Integer[] regressionOrder = {2,3};
 
@@ -44,18 +42,6 @@ public class PolynomialPanelGUI extends JPanel {
     // set layout
     setLayout(new GridLayout(1, 5));
 
-    // set combobox for char Name type
-    charNamejcb = new JComboBox<String>(characterNameTypes);
-    charNamejcb.setAutoscrolls(getVerifyInputWhenFocusTarget());
-    add(charNamejcb);
-
-    // things to do upon selecting the type of chart that is needed
-    charNamejcb.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        JComboBox<String> characterNameType = (JComboBox<String>) e.getSource();
-        characterNameSType = (String) characterNameType.getSelectedItem();
-      }
-    });
     // set the list for numeric attributes available to select
     JScrollPane scrollPane = new JScrollPane();
     attributeYaxisSelectList = new JList<String>(attributeList);
