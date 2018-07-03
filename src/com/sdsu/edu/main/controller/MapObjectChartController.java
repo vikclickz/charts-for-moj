@@ -129,19 +129,20 @@ public class MapObjectChartController {
     Double rangeAxisMax = collect1.get(collect1.size() - 1);
 
     ValueAxis domainAxis = plot.getDomainAxis();
-    domainAxis.setRange(0, domainAxisMax);
+    domainAxis.setRange(0, plot.getDomainAxis().getRange().getCentralValue() * 2);
     domainAxis.setStandardTickUnits(new NumberTickUnitSource());
     plot.setDomainAxis(domainAxis);
 
     ValueAxis rangeAxis = plot.getRangeAxis();
-    rangeAxis.setRange(0, rangeAxisMax);
+    rangeAxis.setRange(0, plot.getRangeAxis().getRange().getCentralValue() * 2);
     rangeAxis.setStandardTickUnits(new NumberTickUnitSource());
     plot.setRangeAxis(rangeAxis);
 
     ChartPanel panel = new ChartPanel(chart);
     chartViewController.displayChart(panel, title);
 
-    drawPowerRegressionLine(chartModel.getXyDataset(), chart, domainAxisMax);
+    drawPowerRegressionLine(chartModel.getXyDataset(), chart,
+        plot.getDomainAxis().getRange().getLowerBound(), plot.getDomainAxis().getRange().getUpperBound());
   }
 
   public void createLinearRegressionChart(List<String> xAxisSelectedList, List<String> yAxisSelectedList) {
@@ -167,12 +168,12 @@ public class MapObjectChartController {
         .collect(Collectors.toList());
 
     ValueAxis domainAxis = plot.getDomainAxis();
-    domainAxis.setRange(0, collect.get(collect.size() - 1));
+    domainAxis.setRange(0, plot.getDomainAxis().getRange().getCentralValue() * 2);
     domainAxis.setStandardTickUnits(new NumberTickUnitSource());
     plot.setDomainAxis(domainAxis);
 
     ValueAxis rangeAxis = plot.getRangeAxis();
-    rangeAxis.setRange(0, collect1.get(collect1.size() - 1));
+    rangeAxis.setRange(0, plot.getRangeAxis().getRange().getCentralValue() * 2);
     rangeAxis.setStandardTickUnits(new NumberTickUnitSource());
     plot.setRangeAxis(rangeAxis);
 
@@ -180,7 +181,8 @@ public class MapObjectChartController {
     ChartPanel panel = new ChartPanel(chart);
     chartViewController.displayChart(panel, title);
 
-    drawRegressionLine(chartModel.getXyDataset(), chart);
+    drawRegressionLine(chartModel.getXyDataset(), chart,
+        plot.getDomainAxis().getRange().getLowerBound(), plot.getDomainAxis().getRange().getUpperBound());
   }
 
   public void create3dPieChart(List<String> selectedFields,
@@ -271,7 +273,7 @@ public class MapObjectChartController {
   }
 
   private void drawPowerRegressionLine(XYDataset inputData, JFreeChart chart,
-      Double max) {
+      double lowerbound, double upperBound) {
     // Get the parameters 'a' and 'b' for an equation y = a + b * x,
     // fitted to the inputData using ordinary least squares regression.
     // a - regressionParameters[0], b - regressionParameters[1]
@@ -283,7 +285,7 @@ public class MapObjectChartController {
         regressionParameters[1]);
 
     XYDataset dataset = DatasetUtilities.sampleFunction2D(curve,
-        0.0, max, 100, "Power Regression Line");
+        lowerbound, upperBound, 100, "Power Regression Line");
 
     XYLineAndShapeRenderer renderer2 = new XYLineAndShapeRenderer(true,
         false);
@@ -295,7 +297,8 @@ public class MapObjectChartController {
   }
 
 
-  private void drawRegressionLine(XYDataset inputData, JFreeChart chart) {
+  private void drawRegressionLine(XYDataset inputData, JFreeChart chart, double lowerBound,
+      double upperBound) {
     // Get the parameters 'a' and 'b' for an equation y = a + b * x,
     // fitted to the inputData using ordinary least squares regression.
     // a - regressionParameters[0], b - regressionParameters[1]
@@ -308,7 +311,7 @@ public class MapObjectChartController {
 
     // Creates a dataset by taking sample values from the line function
     XYDataset dataset = DatasetUtilities.sampleFunction2D(linefunction2d,
-        0D, 300, 100, "Linear Regression Line");
+        lowerBound, upperBound, 100, "Linear Regression Line");
 
     // Draw the line dataset
     XYPlot xyplot = chart.getXYPlot();
