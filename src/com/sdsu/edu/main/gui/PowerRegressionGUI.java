@@ -1,7 +1,6 @@
 package com.sdsu.edu.main.gui;
 
 import com.sdsu.edu.main.controller.MapObjectChartController;
-import com.sdsu.edu.main.controller.db.DbfReadController;
 import com.sdsu.edu.main.constant.GUILabelConstants;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -10,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -92,6 +90,10 @@ public class PowerRegressionGUI extends JPanel {
           for (Object obj : attributeYaxisSelectList.getSelectedValues()) {
             data += obj + ", ";
             yAxisSelectedList.add((String) obj);
+          }
+
+          if(ChartUIUtil.parameterChecks(xAxisSelectedList, yAxisSelectedList)) {
+            return;
           }
 
           /*if (characterNameSType == null) {

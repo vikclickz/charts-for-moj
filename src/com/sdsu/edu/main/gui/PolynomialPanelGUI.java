@@ -96,6 +96,9 @@ public class PolynomialPanelGUI extends JPanel {
             yAxisSelectedList.add((String) obj);
           }
 
+          if(ChartUIUtil.parameterChecks(xAxisSelectedList, yAxisSelectedList)) {
+            return;
+          }
 
           MapObjectChartController mapObjectChartController = MapObjectChartController.getInstance();
           mapObjectChartController.createPolynomialRegressionChart(xAxisSelectedList,

@@ -85,6 +85,10 @@ public class LinearRegressionGUI extends JPanel {
             yAxisSelectedList.add((String) obj);
           }
 
+          if(ChartUIUtil.parameterChecks(xAxisSelectedList, yAxisSelectedList)) {
+            return;
+          }
+
           /*if(characterNameSType == null) {
             characterNameSType = (String) charNamejcb.getSelectedItem();
           }*/
