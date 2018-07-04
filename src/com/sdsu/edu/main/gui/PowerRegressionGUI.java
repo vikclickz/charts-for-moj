@@ -1,5 +1,8 @@
 package com.sdsu.edu.main.gui;
 
+import static com.sdsu.edu.main.constant.GUILabelConstants.DEPENDENT_VARIABLE;
+import static com.sdsu.edu.main.constant.GUILabelConstants.INDEPENDENT_VARIABLE;
+
 import com.sdsu.edu.main.controller.MapObjectChartController;
 import com.sdsu.edu.main.constant.GUILabelConstants;
 import java.awt.GridLayout;
@@ -57,6 +60,8 @@ public class PowerRegressionGUI extends JPanel {
     attributeYaxisSelectList.setVisibleRowCount(5);
     attributeYaxisSelectList.getAutoscrolls();
     attributeYaxisSelectList.setAutoscrolls(getVerifyInputWhenFocusTarget());
+    attributeYaxisSelectList.setToolTipText(DEPENDENT_VARIABLE);
+    attributeYaxisSelectList.setFocusable(true);
     scrollPane.setViewportView(attributeYaxisSelectList);
     add(scrollPane);
 
@@ -67,6 +72,8 @@ public class PowerRegressionGUI extends JPanel {
     attributeXaxisSelectList.setVisibleRowCount(5);
     attributeXaxisSelectList.getAutoscrolls();
     attributeXaxisSelectList.setAutoscrolls(getVerifyInputWhenFocusTarget());
+    attributeXaxisSelectList.setToolTipText(INDEPENDENT_VARIABLE);
+    attributeXaxisSelectList.setFocusable(true);
     scrollPane2.setViewportView(attributeXaxisSelectList);
     add(scrollPane2);
 

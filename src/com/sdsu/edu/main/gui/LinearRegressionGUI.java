@@ -1,5 +1,8 @@
 package com.sdsu.edu.main.gui;
 
+import static com.sdsu.edu.main.constant.GUILabelConstants.DEPENDENT_VARIABLE;
+import static com.sdsu.edu.main.constant.GUILabelConstants.INDEPENDENT_VARIABLE;
+
 import com.sdsu.edu.main.constant.GUILabelConstants;
 import com.sdsu.edu.main.controller.MapObjectChartController;
 import java.awt.GridLayout;
@@ -55,6 +58,8 @@ public class LinearRegressionGUI extends JPanel {
     attributeSelectListYaxis.setVisibleRowCount(5);
     attributeSelectListYaxis.getAutoscrolls();
     attributeSelectListYaxis.setAutoscrolls(getVerifyInputWhenFocusTarget());
+    attributeSelectListYaxis.setToolTipText(DEPENDENT_VARIABLE);
+    attributeSelectListYaxis.setFocusable(true);
     scrollPane.setViewportView(attributeSelectListYaxis);
     add(scrollPane);
 
@@ -65,6 +70,8 @@ public class LinearRegressionGUI extends JPanel {
     attributeSelectListXaxis.setVisibleRowCount(5);
     attributeSelectListXaxis.getAutoscrolls();
     attributeSelectListXaxis.setAutoscrolls(getVerifyInputWhenFocusTarget());
+    attributeSelectListXaxis.setToolTipText(INDEPENDENT_VARIABLE);
+    attributeSelectListXaxis.setFocusable(true);
     scrollPane2.setViewportView(attributeSelectListXaxis);
     add(scrollPane2);
 

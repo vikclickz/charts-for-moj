@@ -1,5 +1,8 @@
 package com.sdsu.edu.main.gui;
 
+import static com.sdsu.edu.main.constant.GUILabelConstants.DEPENDENT_VARIABLE;
+import static com.sdsu.edu.main.constant.GUILabelConstants.INDEPENDENT_VARIABLE;
+
 import com.sdsu.edu.main.controller.MapObjectChartController;
 import com.sdsu.edu.main.controller.db.DbfReadController;
 import com.sdsu.edu.main.constant.GUILabelConstants;
@@ -50,6 +53,8 @@ public class PolynomialPanelGUI extends JPanel {
     attributeYaxisSelectList.setVisibleRowCount(5);
     attributeYaxisSelectList.getAutoscrolls();
     attributeYaxisSelectList.setAutoscrolls(getVerifyInputWhenFocusTarget());
+    attributeYaxisSelectList.setToolTipText(DEPENDENT_VARIABLE);
+    attributeYaxisSelectList.setFocusable(true);
     scrollPane.setViewportView(attributeYaxisSelectList);
     add(scrollPane);
 
@@ -60,11 +65,14 @@ public class PolynomialPanelGUI extends JPanel {
     attributeXaxisSelectList.setVisibleRowCount(5);
     attributeXaxisSelectList.getAutoscrolls();
     attributeXaxisSelectList.setAutoscrolls(getVerifyInputWhenFocusTarget());
+    attributeXaxisSelectList.setToolTipText(INDEPENDENT_VARIABLE);
+    attributeXaxisSelectList.setFocusable(true);
     scrollPane2.setViewportView(attributeXaxisSelectList);
     add(scrollPane2);
 
     chartOrderJcb = new JComboBox<Integer>(regressionOrder);
     chartOrderJcb.setAutoscrolls(getVerifyInputWhenFocusTarget());
+    chartOrderJcb.setToolTipText("Polynomial Function Order");
     add(chartOrderJcb);
 
     // things to do upon selecting the type of chart that is needed
