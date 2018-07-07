@@ -1,7 +1,9 @@
 # charts-for-moj
 
+Code can be here or on Prof. Eckberg's edoras [website](https://edoras.sdsu.edu/~eckberg/Charts2MOJO/Charts2.html)
+
 Instructions on how to view the demo of the charting tool as a stand-alone application are mentioned below:
-1.	Right-Click on the Extended Charts zip file link and select the option “Save link as..” Select the folder where you want this zip file downloaded to.
+1.	Right-Click on the Extended Charts zip file [link](https://edoras.sdsu.edu/~eckberg/Charts2MOJO/ChartTool.rar) and select the option “Save link as..” Select the folder where you want this zip file downloaded to.
 2.	Once zip file is downloaded unzip it.
 3.	Navigate to the ExtendedCharts jar located in the jar folder and double click on it to launch the application
 4.	Once the application opens user can see a map with the layer information on the left.
